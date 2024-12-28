@@ -35,34 +35,62 @@ void World::update()
     for(auto it = edgeChunks.begin(); it != edgeChunks.end(); )
     {
         Chunk *edgeChunk = *it;
-        if(glm::length(playerPos - edgeChunk->position) < 100)
+
+        glm::vec3 leftChunkPos = edgeChunk->position - glm::vec3(CHUNK_X, 0, 0);
+        glm::vec3 rightChunkPos = edgeChunk->position + glm::vec3(CHUNK_X, 0, 0);
+        glm::vec3 frontChunkPos = edgeChunk->position + glm::vec3(0, 0, CHUNK_Z);
+        glm::vec3 backChunkPos = edgeChunk->position - glm::vec3(0, 0, CHUNK_Z);
+
+        Chunk *leftChunk = getChunk(leftChunkPos);
+        Chunk *rightChunk = getChunk(rightChunkPos);
+        Chunk *frontChunk = getChunk(frontChunkPos);
+        Chunk *backChunk = getChunk(backChunkPos);
+
+        float length = glm::length(glm::vec2(playerPos.x - edgeChunk->position.x, playerPos.z - edgeChunk->position.z));
+
+        if(length < 100)
         {
-            glm::vec3 leftChunkPos = edgeChunk->position - glm::vec3(CHUNK_X, 0, 0);
-            glm::vec3 rightChunkPos = edgeChunk->position + glm::vec3(CHUNK_X, 0, 0);
-            glm::vec3 frontChunkPos = edgeChunk->position + glm::vec3(0, 0, CHUNK_Z);
-            glm::vec3 backChunkPos = edgeChunk->position - glm::vec3(0, 0, CHUNK_Z);
-            if(getChunk(leftChunkPos) == nullptr)
+            if(leftChunk == nullptr)
             {
                 loadChunk(leftChunkPos);
             }
-            if(getChunk(rightChunkPos) == nullptr)
+            if(rightChunk == nullptr)
             {
                 loadChunk(rightChunkPos);
             }
-            if(getChunk(frontChunkPos) == nullptr)
+            if(frontChunk == nullptr)
             {
                 loadChunk(frontChunkPos);
             }
-            if(getChunk(backChunkPos) == nullptr)
+            if(backChunk == nullptr)
             {
                 loadChunk(backChunkPos);
             }
             it = edgeChunks.erase(it);
         }
-        else if(glm::length(playerPos - edgeChunk->position) > 200)
+        else if(length > 116)
         {
-            chunks.erase(std::find(chunks.begin(), chunks.end(), edgeChunk));
+            if(leftChunk != nullptr && std::find(edgeChunks.begin(), edgeChunks.end(), leftChunk) == edgeChunks.end())
+            {
+                edgeChunks.push_back(leftChunk);
+            }
+            if(rightChunk != nullptr && std::find(edgeChunks.begin(), edgeChunks.end(), rightChunk) == edgeChunks.end())
+            {
+                edgeChunks.push_back(rightChunk);
+            }
+            if(frontChunk != nullptr && std::find(edgeChunks.begin(), edgeChunks.end(), frontChunk) == edgeChunks.end())
+            {
+                edgeChunks.push_back(frontChunk);
+            }
+            if(backChunk != nullptr && std::find(edgeChunks.begin(), edgeChunks.end(), backChunk) == edgeChunks.end())
+            {
+                edgeChunks.push_back(backChunk);
+            }
+            auto iter = std::find(chunks.begin(), chunks.end(), edgeChunk);
+    
+            chunks.erase(iter);
             it = edgeChunks.erase(it);
+            delete edgeChunk;
         }
         else
         {
@@ -71,7 +99,7 @@ void World::update()
     }
 }
 
-Chunk *World::getChunk(const glm::vec3 position)
+Chunk *World::getChunk(const glm::vec3 &position)
 {
     for(auto chunk : chunks)
     {

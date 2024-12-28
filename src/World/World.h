@@ -13,7 +13,7 @@ public:
     void updateMeshes();
 
     void update();
-    Chunk *getChunk(const glm::vec3 position);
+    Chunk *getChunk(const glm::vec3 &position);
 
 private:
     std::list<Chunk *> chunks;

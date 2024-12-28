@@ -7,6 +7,7 @@
 
 #include "Block.h"
 #include <glm/glm.hpp>
+#include <vector>
 
 class Chunk
 {
@@ -16,6 +17,12 @@ public:
     std::vector<float> vOffset;
     std::vector<glm::mat4> matrices;
     glm::vec3 position;
+
+    Chunk *left = nullptr;
+    Chunk *right = nullptr;
+    Chunk *front = nullptr;
+    Chunk *back = nullptr;
+
 private:
     Block blocks[CHUNK_Y][CHUNK_X][CHUNK_Z];
 

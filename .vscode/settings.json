@@ -54,6 +54,8 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "list": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "semaphore": "cpp",
+        "stop_token": "cpp"
     }
 }

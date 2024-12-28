@@ -25,7 +25,7 @@ void TextureManager::LoadTextures()
     
     //set data in opengl texture
     const uint32_t tex2d_size = tex2d_pxsize * tex2d_pxsize * 4;    //16(px) * 16(px) * 4(rgba)
-    uint8_t tex2d_data[tex2d_size * tex2d_count];
+    uint8_t tex2d_data[16 * 16 * 4 * 4];
 
     memcpy(tex2d_data, ClayBlockImg, tex2d_size);
     memcpy(tex2d_data + tex2d_size, GrassBlockSideImg, tex2d_size);
