@@ -18,7 +18,9 @@ public:
 private:
     std::list<Chunk *> chunks;
     std::list<Chunk *> edgeChunks;
-    std::thread m_thread;
+    std::thread* m_thread;
+    std::vector<float> vOffsets;
+    std::vector<glm::mat4> matrices;
 };
 
 #endif

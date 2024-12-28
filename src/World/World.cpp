@@ -13,9 +13,9 @@ void World::loadChunk(const glm::vec3 &position)
 }
 
 void World::updateMeshes()
-{
-    std::vector<float> vOffsets; 
-    std::vector<glm::mat4> matrices; 
+{ 
+    vOffsets.clear();
+    matrices.clear();
     for(auto chunk : chunks)
     {
         vOffsets.insert(vOffsets.end(), chunk->vOffset.begin(), chunk->vOffset.end());
@@ -27,6 +27,14 @@ void World::updateMeshes()
 World::World()
 {
     loadChunk(glm::vec3(0, 0, 0));
+    /*m_thread = new std::thread([&]() 
+        {
+        while (true)
+        {
+            update();
+        }
+        }
+    );*/
 }
 
 void World::update()

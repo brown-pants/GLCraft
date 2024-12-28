@@ -27,7 +27,7 @@ Application::Application(int argc, char* argv[])
 	info.position = glm::vec3(0, 0, 0);
 	info.front = glm::vec3(0, 0, -1);
 	info.height = 0.0f;
-	info.move_speed = 25.0f;
+	info.move_speed = 125.0f;
 	Player::GetInstance().init(info);
 
 	// std::vector<glm::mat4> matrices;
