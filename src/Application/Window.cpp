@@ -26,6 +26,16 @@ Window::~Window()
     glfwTerminate();
 }
 
+void Window::hide()
+{
+    glfwHideWindow(m_window);
+}
+
+void Window::show()
+{
+    glfwShowWindow(m_window);
+}
+
 void Window::update() const
 {
     glfwSwapBuffers(m_window);
@@ -53,4 +63,12 @@ void Window::setWindowResizeEvent(const std::function<void(int, int)>& f)
         ((Events*)glfwGetWindowUserPointer(window))->windowResize(width, height);
         glViewport(0, 0, width, height);
     });
+}
+
+void Window::setMousePressEvent(const std::function<void(int)>& f)
+{
+    m_events.mousePress = f;
+    glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods) {
+        if (action == GLFW_PRESS)((Events*)glfwGetWindowUserPointer(window))->mousePress(button);
+        });
 }

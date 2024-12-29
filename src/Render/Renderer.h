@@ -12,6 +12,8 @@ public:
     void drawBlocks();
     void updateSquares(const std::vector<float> &vOffsets, const std::vector<glm::mat4> &matrices);
 
+    uint32_t getSquareCount() const { return squareCount; }
+
 private:
     Renderer();
 

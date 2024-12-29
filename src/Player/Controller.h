@@ -7,6 +7,7 @@ class Controller
 public:
     static void KeyListen(GLFWwindow *window);
     static void MouseMove(double x, double y);
+    static void MousePress(int button);
     static void WindowResize(int width, int height);
 };
 

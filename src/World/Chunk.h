@@ -12,20 +12,32 @@
 class Chunk
 {
 public:
-    Chunk(glm::vec3 position);
+    Chunk(glm::vec3 position, Chunk* leftChunk, Chunk* rightChunk, Chunk* frontChunk, Chunk* backChunk);
+    ~Chunk();
 
-    std::vector<float> vOffset;
-    std::vector<glm::mat4> matrices;
-    glm::vec3 position;
+    inline glm::vec3 getPosition() const { return position; }
 
-    Chunk *left = nullptr;
-    Chunk *right = nullptr;
-    Chunk *front = nullptr;
-    Chunk *back = nullptr;
+    inline std::vector<float>& getVOffsets() { return vOffsets; }
+    inline std::vector<glm::mat4>& getMatrices() { return matrices; }
+    
+    inline Chunk* getLeftChunk() const { return leftChunk; }
+    inline Chunk* getRightChunk() const { return rightChunk; }
+    inline Chunk* getFrontChunk() const { return frontChunk; }
+    inline Chunk* getBackChunk() const { return backChunk; }
+
+    void updateMesh();
 
 private:
     Block blocks[CHUNK_Y][CHUNK_X][CHUNK_Z];
 
+    Chunk *leftChunk = nullptr;
+    Chunk *rightChunk = nullptr;
+    Chunk *frontChunk = nullptr;
+    Chunk *backChunk = nullptr;
+
+    std::vector<float> vOffsets;
+    std::vector<glm::mat4> matrices;
+    glm::vec3 position;
 };
 
 #endif

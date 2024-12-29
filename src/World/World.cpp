@@ -4,9 +4,22 @@
 
 #include <iostream>
 
+#define CHUNK_LOAD_DISTANCE 250
+#define CHUNK_DELETE_DISTANCE 300
+
 void World::loadChunk(const glm::vec3 &position)
 {
-    Chunk *chunk = new Chunk(position);
+    glm::vec3 leftChunkPos = position - glm::vec3(CHUNK_X, 0, 0);
+    glm::vec3 rightChunkPos = position + glm::vec3(CHUNK_X, 0, 0);
+    glm::vec3 frontChunkPos = position + glm::vec3(0, 0, CHUNK_Z);
+    glm::vec3 backChunkPos = position - glm::vec3(0, 0, CHUNK_Z);
+
+    Chunk* leftChunk = getChunk(leftChunkPos);
+    Chunk* rightChunk = getChunk(rightChunkPos);
+    Chunk* frontChunk = getChunk(frontChunkPos);
+    Chunk* backChunk = getChunk(backChunkPos);
+
+    Chunk *chunk = new Chunk(position, leftChunk, rightChunk, frontChunk, backChunk);
     chunks.push_back(chunk);
     edgeChunks.push_back(chunk);
     updateMeshes();
@@ -18,23 +31,19 @@ void World::updateMeshes()
     matrices.clear();
     for(auto chunk : chunks)
     {
-        vOffsets.insert(vOffsets.end(), chunk->vOffset.begin(), chunk->vOffset.end());
-        matrices.insert(matrices.end(), chunk->matrices.begin(), chunk->matrices.end());
+        std::vector<float> &chunk_vOffsets = chunk->getVOffsets();
+        std::vector<glm::mat4>& chunk_matrices = chunk->getMatrices();
+        vOffsets.insert(vOffsets.end(), chunk_vOffsets.begin(), chunk_vOffsets.end());
+        matrices.insert(matrices.end(), chunk_matrices.begin(), chunk_matrices.end());
     }
     Renderer::GetInstance().updateSquares(vOffsets, matrices);
 }
 
-World::World()
+World::World(const glm::vec3& playerPos)
 {
-    loadChunk(glm::vec3(0, 0, 0));
-    /*m_thread = new std::thread([&]() 
-        {
-        while (true)
-        {
-            update();
-        }
-        }
-    );*/
+    float x = (int)playerPos.x / CHUNK_X;
+    float z = (int)playerPos.z / CHUNK_X;
+    loadChunk(glm::vec3(x, 0, z));
 }
 
 void World::update()
@@ -43,20 +52,21 @@ void World::update()
     for(auto it = edgeChunks.begin(); it != edgeChunks.end(); )
     {
         Chunk *edgeChunk = *it;
+        glm::vec3 chunkPos = edgeChunk->getPosition();
 
-        glm::vec3 leftChunkPos = edgeChunk->position - glm::vec3(CHUNK_X, 0, 0);
-        glm::vec3 rightChunkPos = edgeChunk->position + glm::vec3(CHUNK_X, 0, 0);
-        glm::vec3 frontChunkPos = edgeChunk->position + glm::vec3(0, 0, CHUNK_Z);
-        glm::vec3 backChunkPos = edgeChunk->position - glm::vec3(0, 0, CHUNK_Z);
+        glm::vec3 leftChunkPos = chunkPos - glm::vec3(CHUNK_X, 0, 0);
+        glm::vec3 rightChunkPos = chunkPos + glm::vec3(CHUNK_X, 0, 0);
+        glm::vec3 frontChunkPos = chunkPos + glm::vec3(0, 0, CHUNK_Z);
+        glm::vec3 backChunkPos = chunkPos - glm::vec3(0, 0, CHUNK_Z);
 
-        Chunk *leftChunk = getChunk(leftChunkPos);
-        Chunk *rightChunk = getChunk(rightChunkPos);
-        Chunk *frontChunk = getChunk(frontChunkPos);
-        Chunk *backChunk = getChunk(backChunkPos);
+        Chunk *leftChunk = edgeChunk->getLeftChunk();
+        Chunk *rightChunk = edgeChunk->getRightChunk();
+        Chunk *frontChunk = edgeChunk->getFrontChunk();
+        Chunk *backChunk = edgeChunk->getBackChunk();
 
-        float length = glm::length(glm::vec2(playerPos.x - edgeChunk->position.x, playerPos.z - edgeChunk->position.z));
+        float distance = glm::length(glm::vec2(playerPos.x - chunkPos.x, playerPos.z - chunkPos.z));
 
-        if(length < 100)
+        if(distance < CHUNK_LOAD_DISTANCE)
         {
             if(leftChunk == nullptr)
             {
@@ -76,7 +86,7 @@ void World::update()
             }
             it = edgeChunks.erase(it);
         }
-        else if(length > 116)
+        else if(distance > CHUNK_DELETE_DISTANCE)
         {
             if(leftChunk != nullptr && std::find(edgeChunks.begin(), edgeChunks.end(), leftChunk) == edgeChunks.end())
             {
@@ -111,7 +121,7 @@ Chunk *World::getChunk(const glm::vec3 &position)
 {
     for(auto chunk : chunks)
     {
-        if(chunk->position == position)
+        if(chunk->getPosition() == position)
         {
             return chunk;
         }

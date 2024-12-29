@@ -8,7 +8,7 @@
 class World
 {
 public:
-    World();
+    World(const glm::vec3& playerPos);
     void loadChunk(const glm::vec3 &position);
     void updateMeshes();
 
@@ -18,7 +18,7 @@ public:
 private:
     std::list<Chunk *> chunks;
     std::list<Chunk *> edgeChunks;
-    std::thread* m_thread;
+
     std::vector<float> vOffsets;
     std::vector<glm::mat4> matrices;
 };

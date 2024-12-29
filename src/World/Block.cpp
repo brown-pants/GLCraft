@@ -43,32 +43,32 @@ bool Block::isTransparent() const
     return Transparency[block_type];
 }
 
-TextureManager::TexureName Block::getLeftTexture()
+TextureManager::TexureName Block::getLeftTexture() const
 {
     return Texs[block_type].left;
 }
 
-TextureManager::TexureName Block::getRightTexture()
+TextureManager::TexureName Block::getRightTexture() const
 {
     return Texs[block_type].right;
 }
 
-TextureManager::TexureName Block::getTopTexture()
+TextureManager::TexureName Block::getTopTexture() const
 {
     return Texs[block_type].top;
 }
 
-TextureManager::TexureName Block::getBottomTexture()
+TextureManager::TexureName Block::getBottomTexture() const
 {
     return Texs[block_type].bottom;
 }
 
-TextureManager::TexureName Block::getFrontTexture()
+TextureManager::TexureName Block::getFrontTexture() const
 {
     return Texs[block_type].front;
 }
 
-TextureManager::TexureName Block::getBackTexture()
+TextureManager::TexureName Block::getBackTexture() const
 {
     return Texs[block_type].back;
 }

@@ -1,5 +1,6 @@
 #include "Controller.h"
 #include "Player.h"
+#include <iostream>
 
 void Controller::KeyListen(GLFWwindow *window)
 {
@@ -62,6 +63,18 @@ void Controller::MouseMove(double x, double y)
     newFront.y = sin(glm::radians(pitch));
     newFront.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
     Player::GetInstance().setFront(glm::normalize(newFront));
+}
+
+void Controller::MousePress(int button)
+{
+    if (button == GLFW_MOUSE_BUTTON_LEFT)
+    {
+        std::cout << "left mouse pressed" << std::endl;
+    }
+    else if (button == GLFW_MOUSE_BUTTON_RIGHT)
+    {
+        std::cout << "right mouse pressed" << std::endl;
+    }
 }
 
 void Controller::WindowResize(int width, int height)
