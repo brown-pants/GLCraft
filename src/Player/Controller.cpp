@@ -69,11 +69,11 @@ void Controller::MousePress(int button)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT)
     {
-        std::cout << "left mouse pressed" << std::endl;
+        Player::GetInstance().dig();
     }
     else if (button == GLFW_MOUSE_BUTTON_RIGHT)
     {
-        std::cout << "right mouse pressed" << std::endl;
+
     }
 }
 

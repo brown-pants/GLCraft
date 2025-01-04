@@ -24,6 +24,9 @@ public:
     void move(int dir);
     void setFront(const glm::vec3 &front);
     inline Camera &getCamera() { return camera; }
+    inline glm::vec3 getPosition() const { return playerInfo.position; }
+
+    void dig();
 
 private:
     Player();

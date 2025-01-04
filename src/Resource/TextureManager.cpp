@@ -18,10 +18,10 @@ void TextureManager::LoadTextures()
 {
     //load images
     stbi_set_flip_vertically_on_load(true);
-    uint8_t *ClayBlockImg = load_texture2d("./resources/textures/ClayBlock.png");
-    uint8_t *GrassBlockSideImg = load_texture2d("./resources/textures/GrassBlockSide.png");
-    uint8_t *GrassBlockTopImg = load_texture2d("./resources/textures/GrassBlockTop.png");
-    uint8_t *StoneBlockImg = load_texture2d("./resources/textures/StoneBlock.png");
+    uint8_t *ClayBlockImg = load_texture2d("./resources/textures/ClayBlock.png").data;
+    uint8_t *GrassBlockSideImg = load_texture2d("./resources/textures/GrassBlockSide.png").data;
+    uint8_t *GrassBlockTopImg = load_texture2d("./resources/textures/GrassBlockTop.png").data;
+    uint8_t *StoneBlockImg = load_texture2d("./resources/textures/StoneBlock.png").data;
     
     //set data in opengl texture
     const uint32_t tex2d_size = tex2d_pxsize * tex2d_pxsize * 4;    //16(px) * 16(px) * 4(rgba)
@@ -32,6 +32,7 @@ void TextureManager::LoadTextures()
     memcpy(tex2d_data + tex2d_size * 2, GrassBlockTopImg, tex2d_size);
     memcpy(tex2d_data + tex2d_size * 3, StoneBlockImg, tex2d_size);
 
+    tex2d.create();
     tex2d.setData((GLubyte *)tex2d_data, tex2d_pxsize, tex2d_pxsize * tex2d_count, GL_TRUE);
     
     //free images
@@ -39,9 +40,25 @@ void TextureManager::LoadTextures()
     stbi_image_free(GrassBlockSideImg);
     stbi_image_free(GrassBlockTopImg);
     stbi_image_free(StoneBlockImg);
+
+    //sun texture
+    TexData sunTex = load_texture2d("./resources/textures/Sun.png");
+    tex_sun.create();
+    tex_sun.setData((GLubyte*)sunTex.data, sunTex.width, sunTex.height, GL_TRUE);
+
+    //free images
+    stbi_image_free(sunTex.data);
+
+    //moon texture
+    TexData moonTex = load_texture2d("./resources/textures/Moon.png");
+    tex_moon.create();
+    tex_moon.setData((GLubyte*)moonTex.data, moonTex.width, moonTex.height, GL_TRUE);
+
+    //free images
+    stbi_image_free(moonTex.data);
 }
 
-uint8_t* TextureManager::load_texture2d(const std::string &filename) const
+TextureManager::TexData TextureManager::load_texture2d(const std::string &filename) const
 {
     GLsizei width, height, nrChannels;
     stbi_uc* data = stbi_load(filename.c_str(), &width, &height, &nrChannels, 0);
@@ -49,7 +66,12 @@ uint8_t* TextureManager::load_texture2d(const std::string &filename) const
     {
         std::cout << filename << " texture load fail" << std::endl;
     }
-    return data;
+    TexData tex;
+    tex.data = data;
+    tex.width = width;
+    tex.height = height;
+    tex.nrChannels = nrChannels;
+    return tex;
 }
 
 uint32_t TextureManager::getTextureVOffset(TexureName tex) const

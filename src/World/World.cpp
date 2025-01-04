@@ -1,11 +1,17 @@
 #include "World.h"
 #include "../Render/Renderer.h"
 #include "../Player/Player.h"
+#include "../Application/Application.h"
 
 #include <iostream>
+#include <mutex>
 
 #define CHUNK_LOAD_DISTANCE 250
 #define CHUNK_DELETE_DISTANCE 300
+
+World* World::RunningWorld = nullptr;
+
+std::mutex mtx;
 
 void World::loadChunk(const glm::vec3 &position)
 {
@@ -22,7 +28,55 @@ void World::loadChunk(const glm::vec3 &position)
     Chunk *chunk = new Chunk(position, leftChunk, rightChunk, frontChunk, backChunk);
     chunks.push_back(chunk);
     edgeChunks.push_back(chunk);
-    updateMeshes();
+}
+
+void World::updateRenderMeshes()
+{
+    if (mtx.try_lock())
+    {
+        Renderer::GetInstance().updateSquares(vOffsets, matrices);
+        mtx.unlock();
+    }
+}
+
+bool World::digTest(const glm::vec3& pos)
+{
+    int chunkX = floor(pos.x / CHUNK_X) * CHUNK_X;
+    int chunkZ = floor(pos.z / CHUNK_Z) * CHUNK_Z;
+    Chunk* chunk = getChunk(glm::vec3(chunkX, 0.0f, chunkZ));
+    if (chunk != nullptr)
+    {
+        int blockX = (int)pos.x % CHUNK_X;
+        int blockZ = (int)pos.z % CHUNK_Z;
+        int blockY = int(pos.y);
+        if (blockX < 0)
+        {
+            blockX += CHUNK_X;
+        }
+        if (blockZ < 0)
+        {
+            blockZ += CHUNK_Z;
+        }
+        std::lock_guard<std::mutex> guard(mtx);
+        if (chunk->dig(blockY, blockX, blockZ))
+        {
+            updateMeshes();
+            return true;
+        }
+        else return false;
+    }
+
+    return false;
+}
+
+void World::updatePlanet()
+{
+    float a = 1.5f / Application::GetFps();
+    sunRotateAngle += a;
+    if (sunRotateAngle >= 360.0f)
+    {
+        sunRotateAngle = 0.0f;
+    }
 }
 
 void World::updateMeshes()
@@ -36,19 +90,27 @@ void World::updateMeshes()
         vOffsets.insert(vOffsets.end(), chunk_vOffsets.begin(), chunk_vOffsets.end());
         matrices.insert(matrices.end(), chunk_matrices.begin(), chunk_matrices.end());
     }
-    Renderer::GetInstance().updateSquares(vOffsets, matrices);
 }
 
 World::World(const glm::vec3& playerPos)
 {
-    float x = (int)playerPos.x / CHUNK_X;
-    float z = (int)playerPos.z / CHUNK_X;
+    float x = floor(playerPos.x / CHUNK_X) * CHUNK_X;
+    float z = floor(playerPos.z / CHUNK_Z) * CHUNK_Z;
     loadChunk(glm::vec3(x, 0, z));
+    update();
+    RunningWorld = this;
+    th_loadWorld = new std::thread([this]() {
+        while (true)
+        {
+            this->update();
+        }
+        });
 }
 
 void World::update()
 {
-    glm::vec3 playerPos = Player::GetInstance().getCamera().position;
+    bool isUpdateMeshes = false;
+    glm::vec3 playerPos = Player::GetInstance().getPosition();
     for(auto it = edgeChunks.begin(); it != edgeChunks.end(); )
     {
         Chunk *edgeChunk = *it;
@@ -85,6 +147,7 @@ void World::update()
                 loadChunk(backChunkPos);
             }
             it = edgeChunks.erase(it);
+            isUpdateMeshes = true;
         }
         else if(distance > CHUNK_DELETE_DISTANCE)
         {
@@ -114,6 +177,12 @@ void World::update()
         {
             it ++;
         }
+    }
+
+    if (isUpdateMeshes)
+    {
+        std::lock_guard<std::mutex> guard(mtx);
+        updateMeshes();
     }
 }
 

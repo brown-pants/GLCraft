@@ -1,11 +1,13 @@
 #include "Chunk.h"
+#include "../Application/Application.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <iostream>
 
 glm::mat4 Rotate90_v = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 glm::mat4 Rotate90_h = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
+float freq = 0.5; // ÆµÂÊ
+float amplitude = 0.5; // Õñ·ù
 
 Chunk::Chunk(glm::vec3 position, Chunk* leftChunk, Chunk* rightChunk, Chunk* frontChunk, Chunk* backChunk) : position(position)
 {
@@ -29,21 +31,28 @@ Chunk::Chunk(glm::vec3 position, Chunk* leftChunk, Chunk* rightChunk, Chunk* fro
         this->backChunk = backChunk;
         backChunk->frontChunk = this;
     }
-    for(int y = 0; y < CHUNK_Y; y ++)
+    for(int x = 0; x < CHUNK_X; x ++)
     {
-        for(int x = 0; x < CHUNK_X; x ++)
+        for(int z = 0; z < CHUNK_Z; z ++)
         {
-            for(int z = 0; z < CHUNK_Z; z ++)
+            //float _y = (sin(3.1415 * x / (CHUNK_X - 1)) + sin(3.1415 * z / (CHUNK_Z - 1))) / 2 * 5;
+            float noise_y = Application::GetNoise().GetNoise((x + position.x) * freq, (z + position.z) * freq) * amplitude;
+            float __y = (int)(noise_y * 100) + 100;
+            for(int y = 0; y < CHUNK_Y; y ++)
             {
-                float _y = (sin(3.1415 * x / (CHUNK_X - 1)) + sin(3.1415 * z / (CHUNK_Z - 1))) / 2 * 5;
                 //if((int)_y >= y)
-                if(y < 10)
+                if (y > __y) continue;
+                if(y == __y)
                 {
                     blocks[y][x][z] = GrassBlock;
                 }
+                else if(y > 50)
+                {
+                    blocks[y][x][z] = ClayBlock;
+                }
                 else
                 {
-                    blocks[y][x][z] = Air;
+                    blocks[y][x][z] = StoneBlock;
                 }
             }
         }
@@ -208,4 +217,33 @@ void Chunk::updateMesh()
             }
         }
     }
+}
+
+bool Chunk::dig(int y, int x, int z)
+{
+    if (y < 0 || y >= CHUNK_Y || x < 0 || x >= CHUNK_X || z < 0 || z >= CHUNK_Z) return false;
+
+    if (blocks[y][x][z].type() != Air)
+    {
+        blocks[y][x][z] = Air;
+        updateMesh();
+        if (this->leftChunk != nullptr)
+        {
+            this->leftChunk->updateMesh();
+        }
+        if (this->rightChunk != nullptr)
+        {
+            this->rightChunk->updateMesh();
+        }
+        if (this->frontChunk != nullptr)
+        {
+            this->frontChunk->updateMesh();
+        }
+        if (this->backChunk != nullptr)
+        {
+            this->backChunk->updateMesh();
+        }
+        return true;
+    }
+    return false;
 }

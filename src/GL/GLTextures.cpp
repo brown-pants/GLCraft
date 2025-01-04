@@ -36,7 +36,7 @@ GLTexture2D::GLTexture2D() : GLTexture(Tex2d)
 void GLTexture2D::setData(GLubyte* data, GLsizei width, GLsizei height, GLboolean alpha)
 {
 	this->bind();
-	GLenum format = (alpha == false ? GL_RGB : GL_RGBA);
+	GLenum format = (alpha == GL_FALSE ? GL_RGB : GL_RGBA);
 	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

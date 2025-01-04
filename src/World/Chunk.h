@@ -27,6 +27,8 @@ public:
 
     void updateMesh();
 
+    bool dig(int y, int x, int z);
+
 private:
     Block blocks[CHUNK_Y][CHUNK_X][CHUNK_Z];
 

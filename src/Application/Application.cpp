@@ -10,11 +10,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 float Application::FPS = 100.0f;
+FastNoiseLite Application::noise;
 
 Application::Application(int argc, char* argv[])
 {
 	m_window = new Window(1600, 1000, "GLCraft");
-	//m_window->hide();
 
 	TextureManager::GetInstance().LoadTextures();
 	ShaderManager::GetInstance().LoadShaders();
@@ -31,11 +31,10 @@ Application::Application(int argc, char* argv[])
 	info.height = 0.0f;
 	info.move_speed = 25.0f;
 	Player::GetInstance().init(info);
+	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
+	noise.SetSeed(520);
 	
-	//std::cout << "loading world..." << std::endl;
-	world = new World(Player::GetInstance().getCamera().position);
-	world->update();
-	//m_window->show();
+	world = new World(Player::GetInstance().getPosition());
 }
 
 Application::~Application()
@@ -52,7 +51,10 @@ int Application::run()
 		m_window->update();
 		Controller::KeyListen(m_window->getGlfwWindow());
 		Renderer::GetInstance().drawBlocks();
-		world->update();
+		Renderer::GetInstance().drawCrosshair();
+		Renderer::GetInstance().drawPlanet();
+		world->updateRenderMeshes();
+		world->updatePlanet();
 		
 		FPS = 1.0f / (glfwGetTime() - time);
 		printInfo();

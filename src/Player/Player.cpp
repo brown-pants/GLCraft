@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "../Application/Application.h"
+#include "../World/World.h"
 
 Player &Player::GetInstance()
 {
@@ -59,6 +60,24 @@ void Player::setFront(const glm::vec3 &front)
 {
     playerInfo.front = front;
     updateCamera();
+}
+
+void Player::dig()
+{
+    float stride = 0.01f;
+    float maxLength = 10.0f;
+    float curLenfth = 0.0f;
+    glm::vec3 pos = camera.position;
+    const glm::vec3 dir = camera.front * stride;
+    while (curLenfth <= maxLength)
+    {
+        pos += dir;
+        if (World::RunningWorld->digTest(pos))
+        {
+            break;
+        }
+        curLenfth += stride;
+    }
 }
 
 void Player::updateCamera()

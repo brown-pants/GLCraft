@@ -4,23 +4,39 @@
 #include <list>
 #include <queue>
 #include <thread>
+#include <glm/gtc/matrix_transform.hpp>
 
 class World
 {
 public:
     World(const glm::vec3& playerPos);
     void loadChunk(const glm::vec3 &position);
-    void updateMeshes();
-
-    void update();
     Chunk *getChunk(const glm::vec3 &position);
 
+    void updateRenderMeshes();
+
+    bool digTest(const glm::vec3& pos);
+
+    static World* RunningWorld;
+
+    void updatePlanet();
+
+    glm::mat4 getSunModelMatrix() const { return glm::rotate(glm::mat4(1.0f), glm::radians(sunRotateAngle), glm::vec3(1.0f, 0.0f, 0.0f)); }
+    glm::mat4 getMoonModelMatrix() const { return glm::rotate(glm::mat4(1.0f), glm::radians(sunRotateAngle + 180.0f), glm::vec3(1.0f, 0.0f, 0.0f)); }
+
 private:
+    void updateMeshes();
+    void update();
+
     std::list<Chunk *> chunks;
     std::list<Chunk *> edgeChunks;
 
     std::vector<float> vOffsets;
     std::vector<glm::mat4> matrices;
+
+    std::thread* th_loadWorld;
+
+    float sunRotateAngle = 0.0;
 };
 
 #endif

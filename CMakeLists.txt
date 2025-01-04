@@ -13,5 +13,6 @@ target_include_directories(GLCraft PRIVATE	"3rdparty/glad/include"
 											"3rdparty/glfw/include"
 											"3rdparty/glm"
 											"3rdparty/stb_image"
+											"3rdparty/FastNoise"
 )
 file(COPY ${PROJECT_SOURCE_DIR}/resources DESTINATION ${CMAKE_BINARY_DIR})
