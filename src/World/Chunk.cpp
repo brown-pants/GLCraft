@@ -4,8 +4,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 
-glm::mat4 Rotate90_v = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-glm::mat4 Rotate90_h = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+glm::mat4 Rotate_left = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+glm::mat4 Rotate_right = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+glm::mat4 Rotate_top = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+glm::mat4 Rotate_bottom = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+glm::mat4 Rotate_front = glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+glm::mat4 Rotate_back = glm::mat4(1.0f);
 
 Chunk::Chunk(glm::vec3 position, Chunk* leftChunk, Chunk* rightChunk, Chunk* frontChunk, Chunk* backChunk) : position(position)
 {
@@ -214,32 +218,32 @@ void Chunk::updateMesh()
                 if (leftBlockTrans)
                 {
                     vOffsets.push_back(block.getLeftTexture());
-                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x - 0.5f, y, z)) * Rotate90_v);
+                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x - 0.5f, y, z)) * Rotate_left);
                 }
                 if (rightBlockTrans)
                 {
                     vOffsets.push_back(block.getRightTexture());
-                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x + 0.5f, y, z)) * Rotate90_v);
+                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x + 0.5f, y, z)) * Rotate_right);
                 }
                 if (topBlockTrans)
                 {
                     vOffsets.push_back(block.getTopTexture());
-                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y + 0.5f, z)) * Rotate90_h);
+                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y + 0.5f, z)) * Rotate_top);
                 }
                 if (bottomBlockTrans)
                 {
                     vOffsets.push_back(block.getBottomTexture());
-                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y - 0.5f, z)) * Rotate90_h);
+                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y - 0.5f, z)) * Rotate_bottom);
                 }
                 if (frontBlockTrans)
                 {
                     vOffsets.push_back(block.getFrontTexture());
-                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y, z + 0.5f)));
+                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y, z + 0.5f)) * Rotate_front);
                 }
                 if (backBlockTrans)
                 {
                     vOffsets.push_back(block.getBackTexture());
-                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y, z - 0.5f)));
+                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y, z - 0.5f)) * Rotate_back);
                 }
             }
         }

@@ -18,9 +18,11 @@ Window::Window(int width, int height, const char* title)
     glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glViewport(0, 0, width, height);
     glfwSetWindowUserPointer(m_window, &m_events);
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND); 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_CULL_FACE);
 }
 
 Window::~Window()
@@ -41,7 +43,7 @@ void Window::show()
 void Window::update() const
 {
     glfwSwapBuffers(m_window);
-    glClearColor(0.1f, 0.7f, 0.7f, 1.0f);
+    //glClearColor(0.1f, 0.7f, 0.7f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glfwPollEvents();
 }

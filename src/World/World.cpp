@@ -79,6 +79,13 @@ void World::updatePlanet()
     }
 }
 
+glm::vec3 World::getSkyColor() const
+{
+    float h = getSunPosition().y;
+    if (h < 0) return glm::vec3(0.0f);
+    else return glm::vec3(0.5f / 100.0f * h, 0.8f / 100.0f * h, 1.0f / 100.0f * h);
+}
+
 void World::updateMeshes()
 { 
     vOffsets.clear();

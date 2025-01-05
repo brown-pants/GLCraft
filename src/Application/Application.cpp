@@ -51,7 +51,8 @@ int Application::run()
 	while (!m_window->shouldClose())
 	{
 		float time = glfwGetTime();
-
+		glm::vec3 skyColor = world->getSkyColor();
+		glClearColor(skyColor.r, skyColor.g, skyColor.b, 1.0f);
 		m_window->update();
 		Controller::KeyListen(m_window->getGlfwWindow());
 		Renderer::GetInstance().drawBlocks();

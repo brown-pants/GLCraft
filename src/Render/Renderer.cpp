@@ -90,8 +90,8 @@ void Renderer::init()
     };
 
     unsigned int planet_indices[] = {
-        0, 1, 3, // first triangle
-        1, 2, 3  // second triangle
+        3, 1, 0, // first triangle
+        3, 2, 1  // second triangle
     };
 
     planetMesh.vao.create();
@@ -115,6 +115,8 @@ void Renderer::drawBlocks()
     squareShader.setMat4("view", camera.getViewMatrix());
     squareShader.setMat4("projection", camera.getProjectionMatrix());
     squareShader.setInt("tex2d_count", TextureManager::GetInstance().tex2d_count);
+    squareShader.setVec3("sunPos", World::RunningWorld->getSunPosition());
+    squareShader.setVec3("moonPos", World::RunningWorld->getMoonPosition());
 
     //render...
     squareShader.bind();
