@@ -1,7 +1,7 @@
 #include "Block.h"
 
-std::array<Block::Textures, 4> Block::Texs;
-std::array<bool, 4> Block::Transparency;
+std::array<Block::Textures, 6> Block::Texs;
+std::array<bool, 6> Block::Transparency;
 
 Block::Block(Block_Type type) : block_type(type)
 {
@@ -12,6 +12,8 @@ Block::Block(Block_Type type) : block_type(type)
         Transparency[ClayBlock] = false;
         Transparency[GrassBlock] = false;
         Transparency[StoneBlock] = false;
+        Transparency[SandBlock] = false;
+        Transparency[SnowBlock] = false;
 
         Texs[ClayBlock].left = TextureManager::ClayBlock;
         Texs[ClayBlock].right = TextureManager::ClayBlock;
@@ -33,6 +35,20 @@ Block::Block(Block_Type type) : block_type(type)
         Texs[StoneBlock].bottom = TextureManager::StoneBlock;
         Texs[StoneBlock].front = TextureManager::StoneBlock;
         Texs[StoneBlock].back = TextureManager::StoneBlock;
+
+        Texs[SandBlock].left = TextureManager::SandBlock;
+        Texs[SandBlock].right = TextureManager::SandBlock;
+        Texs[SandBlock].top = TextureManager::SandBlock;
+        Texs[SandBlock].bottom = TextureManager::SandBlock;
+        Texs[SandBlock].front = TextureManager::SandBlock;
+        Texs[SandBlock].back = TextureManager::SandBlock;
+
+        Texs[SnowBlock].left = TextureManager::SnowBlockSide;
+        Texs[SnowBlock].right = TextureManager::SnowBlockSide;
+        Texs[SnowBlock].top = TextureManager::SnowBlockTop;
+        Texs[SnowBlock].bottom = TextureManager::ClayBlock;
+        Texs[SnowBlock].front = TextureManager::SnowBlockSide;
+        Texs[SnowBlock].back = TextureManager::SnowBlockSide;
 
         isInited = true;
     }

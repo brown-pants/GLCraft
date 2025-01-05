@@ -8,7 +8,9 @@ enum Block_Type
     Air = 0,
     ClayBlock,
     GrassBlock,
-    StoneBlock
+    StoneBlock,
+    SandBlock,
+    SnowBlock
 };
 
 class Block
@@ -35,8 +37,8 @@ private:
     {
         TextureManager::TexureName left, right, top, bottom, front, back;
     };
-    static std::array<Textures, 4> Texs;
-    static std::array<bool, 4> Transparency;
+    static std::array<Textures, 6> Texs;
+    static std::array<bool, 6> Transparency;
     Block_Type block_type;
 };
 

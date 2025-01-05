@@ -4,6 +4,7 @@
 #include "../Render/Renderer.h"
 #include "../Player/Player.h"
 #include "../Player/Controller.h"
+#include "../Math/Noise/PerlinNoise.h"
 #include <functional>
 #include <string.h>
 
@@ -15,14 +16,16 @@ FastNoiseLite Application::noise;
 Application::Application(int argc, char* argv[])
 {
 	m_window = new Window(1600, 1000, "GLCraft");
+	m_window->setMouseMoveEvent(Controller::MouseMove);
+	m_window->setWindowResizeEvent(Controller::WindowResize);
+	m_window->setMousePressEvent(Controller::MousePress);
 
 	TextureManager::GetInstance().LoadTextures();
 	ShaderManager::GetInstance().LoadShaders();
 	Renderer::GetInstance().init();
 
-	m_window->setMouseMoveEvent(Controller::MouseMove);
-	m_window->setWindowResizeEvent(Controller::WindowResize);
-	m_window->setMousePressEvent(Controller::MousePress);
+	PerlinNoise::Init(520);
+
 
 	//----------------Debug--------------
 	Player::PlayerInfo info;
@@ -34,6 +37,7 @@ Application::Application(int argc, char* argv[])
 	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	noise.SetSeed(520);
 	
+
 	world = new World(Player::GetInstance().getPosition());
 }
 

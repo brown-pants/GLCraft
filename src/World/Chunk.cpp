@@ -1,13 +1,11 @@
 #include "Chunk.h"
 #include "../Application/Application.h"
+#include "../Math/Noise/PerlinNoise.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 
 glm::mat4 Rotate90_v = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 glm::mat4 Rotate90_h = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-
-float freq = 0.5; // ÆµÂÊ
-float amplitude = 0.5; // Õñ·ù
 
 Chunk::Chunk(glm::vec3 position, Chunk* leftChunk, Chunk* rightChunk, Chunk* frontChunk, Chunk* backChunk) : position(position)
 {
@@ -35,24 +33,53 @@ Chunk::Chunk(glm::vec3 position, Chunk* leftChunk, Chunk* rightChunk, Chunk* fro
     {
         for(int z = 0; z < CHUNK_Z; z ++)
         {
-            //float _y = (sin(3.1415 * x / (CHUNK_X - 1)) + sin(3.1415 * z / (CHUNK_Z - 1))) / 2 * 5;
-            float noise_y = Application::GetNoise().GetNoise((x + position.x) * freq, (z + position.z) * freq) * amplitude;
-            float __y = (int)(noise_y * 100) + 100;
+            int max_y = 
+                PerlinNoise::Noise_2d(0.2, 64, position.x + x, position.z + z) +
+                PerlinNoise::Noise_2d(0.8, 32, position.x + x, position.z + z) +
+                PerlinNoise::Noise_2d(1.6, 16, position.x + x, position.z + z) + 130;
+
+            float temperature = PerlinNoise::Noise_2d(0.3, 1, position.x + x, position.z + z);
+
             for(int y = 0; y < CHUNK_Y; y ++)
             {
-                //if((int)_y >= y)
-                if (y > __y) continue;
-                if(y == __y)
+                float noise_3d = PerlinNoise::Noise_3d(1, 1, position.x + x, position.y + y, position.z + z);
+
+                if (noise_3d > y * 0.005 && y > 10) continue;
+
+                if (y > max_y)
                 {
-                    blocks[y][x][z] = GrassBlock;
+                    continue;
                 }
-                else if(y > 50)
-                {
-                    blocks[y][x][z] = ClayBlock;
-                }
-                else
+                if (y < 60)
                 {
                     blocks[y][x][z] = StoneBlock;
+                    continue;
+                }
+                if (temperature > 0.3f)  //É³Ä®
+                {
+                    blocks[y][x][z] = SandBlock;
+                }
+                else if (temperature > 0.0f) //ÂÌÖÞ
+                {
+                    if (y == max_y)
+                    {
+                        blocks[y][x][z] = GrassBlock;
+                    }
+                    else
+                    {
+                        blocks[y][x][z] = ClayBlock;
+                    }
+                }
+                else  //Ñ©µØ
+                {
+                    if (y == max_y)
+                    {
+                        blocks[y][x][z] = SnowBlock;
+                    }
+                    else
+                    {
+                        blocks[y][x][z] = ClayBlock;
+                    }
                 }
             }
         }
