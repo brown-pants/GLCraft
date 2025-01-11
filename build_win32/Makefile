@@ -142,19 +142,6 @@ glad/fast:
 .PHONY : glad/fast
 
 #=============================================================================
-# Target rules for targets named glfw
-
-# Build rule for target.
-glfw: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 glfw
-.PHONY : glfw
-
-# fast build rule for target.
-glfw/fast:
-	$(MAKE) $(MAKESILENT) -f 3rdparty\glfw\src\CMakeFiles\glfw.dir\build.make 3rdparty/glfw/src/CMakeFiles/glfw.dir/build
-.PHONY : glfw/fast
-
-#=============================================================================
 # Target rules for targets named update_mappings
 
 # Build rule for target.
@@ -166,6 +153,19 @@ update_mappings: cmake_check_build_system
 update_mappings/fast:
 	$(MAKE) $(MAKESILENT) -f 3rdparty\glfw\src\CMakeFiles\update_mappings.dir\build.make 3rdparty/glfw/src/CMakeFiles/update_mappings.dir/build
 .PHONY : update_mappings/fast
+
+#=============================================================================
+# Target rules for targets named glfw
+
+# Build rule for target.
+glfw: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 glfw
+.PHONY : glfw
+
+# fast build rule for target.
+glfw/fast:
+	$(MAKE) $(MAKESILENT) -f 3rdparty\glfw\src\CMakeFiles\glfw.dir\build.make 3rdparty/glfw/src/CMakeFiles/glfw.dir/build
+.PHONY : glfw/fast
 
 src/Application/Application.obj: src/Application/Application.cpp.obj
 .PHONY : src/Application/Application.obj

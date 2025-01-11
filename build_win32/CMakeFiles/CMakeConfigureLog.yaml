@@ -791,3 +791,121 @@ events:
         
       exitCode: 0
 ...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "D:/CMake/share/cmake-3.29/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "D:/CMake/share/cmake-3.29/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "D:/CMake/share/cmake-3.29/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/glfw/CMakeLists.txt:122 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test _GLFW_HAS_DEP"
+    directories:
+      source: "C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-dgfiqi"
+      binary: "C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-dgfiqi"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/hp/Desktop/code/GLCraft/3rdparty/glfw/CMake/modules"
+    buildResult:
+      variable: "_GLFW_HAS_DEP"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-dgfiqi'
+        
+        Run Build Command(s): D:/CMake/bin/cmake.exe -E env VERBOSE=1 D:/Qt/Tools/mingw1120_64/bin/mingw32-make.exe -f Makefile cmTC_3aac6/fast
+        mingw32-make.exe[1]: Entering directory 'C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-dgfiqi'
+        D:/Qt/Tools/mingw1120_64/bin/mingw32-make.exe  -f CMakeFiles\\cmTC_3aac6.dir\\build.make CMakeFiles/cmTC_3aac6.dir/build
+        mingw32-make.exe[2]: Entering directory 'C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-dgfiqi'
+        Building C object CMakeFiles/cmTC_3aac6.dir/src.c.obj
+        D:\\Qt\\Tools\\mingw1120_64\\bin\\gcc.exe -D_GLFW_HAS_DEP  -Wl,--nxcompat -o CMakeFiles\\cmTC_3aac6.dir\\src.c.obj -c C:\\Users\\hp\\Desktop\\code\\GLCraft\\build_win32\\CMakeFiles\\CMakeScratch\\TryCompile-dgfiqi\\src.c
+        Linking C executable cmTC_3aac6.exe
+        D:\\CMake\\bin\\cmake.exe -E cmake_link_script CMakeFiles\\cmTC_3aac6.dir\\link.txt --verbose=1
+        D:\\CMake\\bin\\cmake.exe -E rm -f CMakeFiles\\cmTC_3aac6.dir/objects.a
+        D:\\Qt\\Tools\\mingw1120_64\\bin\\ar.exe qc CMakeFiles\\cmTC_3aac6.dir/objects.a @CMakeFiles\\cmTC_3aac6.dir\\objects1.rsp
+        D:\\Qt\\Tools\\mingw1120_64\\bin\\gcc.exe  -Wl,--nxcompat -Wl,--whole-archive CMakeFiles\\cmTC_3aac6.dir/objects.a -Wl,--no-whole-archive -o cmTC_3aac6.exe -Wl,--out-implib,libcmTC_3aac6.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\\cmTC_3aac6.dir\\linkLibs.rsp
+        mingw32-make.exe[2]: Leaving directory 'C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-dgfiqi'
+        mingw32-make.exe[1]: Leaving directory 'C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-dgfiqi'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "D:/CMake/share/cmake-3.29/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "D:/CMake/share/cmake-3.29/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "D:/CMake/share/cmake-3.29/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/glfw/CMakeLists.txt:129 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test _GLFW_HAS_ASLR"
+    directories:
+      source: "C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-n175la"
+      binary: "C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-n175la"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/hp/Desktop/code/GLCraft/3rdparty/glfw/CMake/modules"
+    buildResult:
+      variable: "_GLFW_HAS_ASLR"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-n175la'
+        
+        Run Build Command(s): D:/CMake/bin/cmake.exe -E env VERBOSE=1 D:/Qt/Tools/mingw1120_64/bin/mingw32-make.exe -f Makefile cmTC_95548/fast
+        mingw32-make.exe[1]: Entering directory 'C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-n175la'
+        D:/Qt/Tools/mingw1120_64/bin/mingw32-make.exe  -f CMakeFiles\\cmTC_95548.dir\\build.make CMakeFiles/cmTC_95548.dir/build
+        mingw32-make.exe[2]: Entering directory 'C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-n175la'
+        Building C object CMakeFiles/cmTC_95548.dir/src.c.obj
+        D:\\Qt\\Tools\\mingw1120_64\\bin\\gcc.exe -D_GLFW_HAS_ASLR  -Wl,--dynamicbase -o CMakeFiles\\cmTC_95548.dir\\src.c.obj -c C:\\Users\\hp\\Desktop\\code\\GLCraft\\build_win32\\CMakeFiles\\CMakeScratch\\TryCompile-n175la\\src.c
+        Linking C executable cmTC_95548.exe
+        D:\\CMake\\bin\\cmake.exe -E cmake_link_script CMakeFiles\\cmTC_95548.dir\\link.txt --verbose=1
+        D:\\CMake\\bin\\cmake.exe -E rm -f CMakeFiles\\cmTC_95548.dir/objects.a
+        D:\\Qt\\Tools\\mingw1120_64\\bin\\ar.exe qc CMakeFiles\\cmTC_95548.dir/objects.a @CMakeFiles\\cmTC_95548.dir\\objects1.rsp
+        D:\\Qt\\Tools\\mingw1120_64\\bin\\gcc.exe  -Wl,--dynamicbase -Wl,--whole-archive CMakeFiles\\cmTC_95548.dir/objects.a -Wl,--no-whole-archive -o cmTC_95548.exe -Wl,--out-implib,libcmTC_95548.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\\cmTC_95548.dir\\linkLibs.rsp
+        mingw32-make.exe[2]: Leaving directory 'C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-n175la'
+        mingw32-make.exe[1]: Leaving directory 'C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-n175la'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "D:/CMake/share/cmake-3.29/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "D:/CMake/share/cmake-3.29/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "D:/CMake/share/cmake-3.29/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/glfw/CMakeLists.txt:136 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test _GLFW_HAS_64ASLR"
+    directories:
+      source: "C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-7rvwiy"
+      binary: "C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-7rvwiy"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/hp/Desktop/code/GLCraft/3rdparty/glfw/CMake/modules"
+    buildResult:
+      variable: "_GLFW_HAS_64ASLR"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-7rvwiy'
+        
+        Run Build Command(s): D:/CMake/bin/cmake.exe -E env VERBOSE=1 D:/Qt/Tools/mingw1120_64/bin/mingw32-make.exe -f Makefile cmTC_1b3c5/fast
+        mingw32-make.exe[1]: Entering directory 'C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-7rvwiy'
+        D:/Qt/Tools/mingw1120_64/bin/mingw32-make.exe  -f CMakeFiles\\cmTC_1b3c5.dir\\build.make CMakeFiles/cmTC_1b3c5.dir/build
+        mingw32-make.exe[2]: Entering directory 'C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-7rvwiy'
+        Building C object CMakeFiles/cmTC_1b3c5.dir/src.c.obj
+        D:\\Qt\\Tools\\mingw1120_64\\bin\\gcc.exe -D_GLFW_HAS_64ASLR  -Wl,--high-entropy-va -o CMakeFiles\\cmTC_1b3c5.dir\\src.c.obj -c C:\\Users\\hp\\Desktop\\code\\GLCraft\\build_win32\\CMakeFiles\\CMakeScratch\\TryCompile-7rvwiy\\src.c
+        Linking C executable cmTC_1b3c5.exe
+        D:\\CMake\\bin\\cmake.exe -E cmake_link_script CMakeFiles\\cmTC_1b3c5.dir\\link.txt --verbose=1
+        D:\\CMake\\bin\\cmake.exe -E rm -f CMakeFiles\\cmTC_1b3c5.dir/objects.a
+        D:\\Qt\\Tools\\mingw1120_64\\bin\\ar.exe qc CMakeFiles\\cmTC_1b3c5.dir/objects.a @CMakeFiles\\cmTC_1b3c5.dir\\objects1.rsp
+        D:\\Qt\\Tools\\mingw1120_64\\bin\\gcc.exe  -Wl,--high-entropy-va -Wl,--whole-archive CMakeFiles\\cmTC_1b3c5.dir/objects.a -Wl,--no-whole-archive -o cmTC_1b3c5.exe -Wl,--out-implib,libcmTC_1b3c5.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\\cmTC_1b3c5.dir\\linkLibs.rsp
+        mingw32-make.exe[2]: Leaving directory 'C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-7rvwiy'
+        mingw32-make.exe[1]: Leaving directory 'C:/Users/hp/Desktop/code/GLCraft/build_win32/CMakeFiles/CMakeScratch/TryCompile-7rvwiy'
+        
+      exitCode: 0
+...

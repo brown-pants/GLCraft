@@ -345,6 +345,9 @@ GLFW_SOURCE_DIR:STATIC=C:/Users/hp/Desktop/code/GLCraft/3rdparty/glfw
 //Force use of high-performance GPU on hybrid systems
 GLFW_USE_HYBRID_HPG:BOOL=OFF
 
+//Assume the Vulkan loader is linked with the application
+GLFW_VULKAN_STATIC:BOOL=OFF
+
 //Value Computed by CMake
 Glad_BINARY_DIR:STATIC=C:/Users/hp/Desktop/code/GLCraft/build_win32/3rdparty/glad
 
@@ -563,6 +566,12 @@ GLFW_PKG_CONFIG_REQUIRES_PRIVATE:INTERNAL=
 XINPUT_H_FOUND:INTERNAL=1
 //linker supports push/pop state
 _CMAKE_LINKER_PUSHPOP_STATE_SUPPORTED:INTERNAL=TRUE
+//Test _GLFW_HAS_64ASLR
+_GLFW_HAS_64ASLR:INTERNAL=1
+//Test _GLFW_HAS_ASLR
+_GLFW_HAS_ASLR:INTERNAL=1
+//Test _GLFW_HAS_DEP
+_GLFW_HAS_DEP:INTERNAL=1
 //CMAKE_INSTALL_PREFIX during last run
 _GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=C:/Program Files (x86)/GLCraft
 

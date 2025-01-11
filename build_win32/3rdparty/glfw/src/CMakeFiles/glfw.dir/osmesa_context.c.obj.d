@@ -1,20 +1,31 @@
 3rdparty/glfw/src/CMakeFiles/glfw.dir/osmesa_context.c.obj: \
  C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\osmesa_context.c \
- C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\internal.h \
- C:/Users/hp/Desktop/code/GLCraft/3rdparty/glfw/include/GLFW/glfw3.h \
- D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/stddef.h \
- D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/stddef.h \
- D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/crtdefs.h \
+ D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/stdlib.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/corecrt.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/_mingw.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/_mingw_mac.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/_mingw_secapi.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/vadefs.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/sdks/_mingw_ddk.h \
+ D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/corecrt_wstdlib.h \
+ D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed/limits.h \
+ D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed/syslimits.h \
+ D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/limits.h \
+ D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/crtdefs.h \
+ D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/sec_api/stdlib_s.h \
+ D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/malloc.h \
+ D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/mm_malloc.h \
+ D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/errno.h \
+ D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/string.h \
+ D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/sec_api/string_s.h \
+ D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/assert.h \
+ C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\internal.h \
+ C:/Users/hp/Desktop/code/GLCraft/build_win32/3rdparty/glfw/src/glfw_config.h \
+ C:/Users/hp/Desktop/code/GLCraft/3rdparty/glfw/include/GLFW/glfw3.h \
+ D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/stddef.h \
+ D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/stddef.h \
  D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/stdint.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/stdint.h \
- C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\platform.h \
- C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\null_platform.h \
  C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\win32_platform.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/wctype.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/windows.h \
@@ -37,8 +48,6 @@
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/psdk_inc/intrin-impl.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/basetsd.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/guiddef.h \
- D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/string.h \
- D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/sec_api/string_s.h \
  D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/x86intrin.h \
  D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/x86gprintrin.h \
  D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/ia32intrin.h \
@@ -77,15 +86,6 @@
  D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/immintrin.h \
  D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/mmintrin.h \
  D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/xmmintrin.h \
- D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/mm_malloc.h \
- D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/stdlib.h \
- D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/corecrt_wstdlib.h \
- D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed/limits.h \
- D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed/syslimits.h \
- D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/limits.h \
- D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/sec_api/stdlib_s.h \
- D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/malloc.h \
- D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/errno.h \
  D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/emmintrin.h \
  D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/pmmintrin.h \
  D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/tmmintrin.h \
@@ -225,9 +225,7 @@
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/_mingw_dxhelper.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/xinput.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/dbt.h \
- C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\null_joystick.h \
  C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\win32_joystick.h \
- C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\win32_thread.h \
- C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\win32_time.h \
- C:/Users/hp/Desktop/code/GLCraft/3rdparty/glfw/include/GLFW/glfw3native.h \
- D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/assert.h
+ C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\wgl_context.h \
+ C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\egl_context.h \
+ C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\osmesa_context.h

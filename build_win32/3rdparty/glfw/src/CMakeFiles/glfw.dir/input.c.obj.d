@@ -1,6 +1,7 @@
 3rdparty/glfw/src/CMakeFiles/glfw.dir/input.c.obj: \
  C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\input.c \
  C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\internal.h \
+ C:/Users/hp/Desktop/code/GLCraft/build_win32/3rdparty/glfw/src/glfw_config.h \
  C:/Users/hp/Desktop/code/GLCraft/3rdparty/glfw/include/GLFW/glfw3.h \
  D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/stddef.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/stddef.h \
@@ -13,8 +14,6 @@
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/sdks/_mingw_ddk.h \
  D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/stdint.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/stdint.h \
- C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\platform.h \
- C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\null_platform.h \
  C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\win32_platform.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/wctype.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/windows.h \
@@ -225,11 +224,10 @@
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/_mingw_dxhelper.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/xinput.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/dbt.h \
- C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\null_joystick.h \
  C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\win32_joystick.h \
- C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\win32_thread.h \
- C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\win32_time.h \
- C:/Users/hp/Desktop/code/GLCraft/3rdparty/glfw/include/GLFW/glfw3native.h \
+ C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\wgl_context.h \
+ C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\egl_context.h \
+ C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\osmesa_context.h \
  C:\Users\hp\Desktop\code\GLCraft\3rdparty\glfw\src\mappings.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/assert.h \
  D:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/float.h \

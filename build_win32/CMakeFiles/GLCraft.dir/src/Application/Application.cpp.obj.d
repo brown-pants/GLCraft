@@ -379,7 +379,7 @@ CMakeFiles/GLCraft.dir/src/Application/Application.cpp.obj: \
  C:/Users/hp/Desktop/code/GLCraft/src/Player/Player.h \
  C:/Users/hp/Desktop/code/GLCraft/src/Math/Camera.h \
  C:/Users/hp/Desktop/code/GLCraft/src/Player/Controller.h \
- C:/Users/hp/Desktop/code/GLCraft/3rdparty/glfw/include/glfw/glfw3.h \
+ C:/Users/hp/Desktop/code/GLCraft/src/Application/Application.h \
  C:/Users/hp/Desktop/code/GLCraft/src/Math/Noise/PerlinNoise.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/string.h \
  D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/sec_api/string_s.h

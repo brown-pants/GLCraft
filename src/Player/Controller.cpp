@@ -40,6 +40,10 @@ void Controller::KeyListen(GLFWwindow *window)
 
 void Controller::MouseMove(double x, double y)
 {
+    if(!is_cursor_disabled)
+    {
+        return;
+    }
     float xpos = static_cast<float>(x);
     float ypos = static_cast<float>(y);
     static float lastX, lastY, yaw = -90.0f, pitch = 0.0f;
