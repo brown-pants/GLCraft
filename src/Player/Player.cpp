@@ -66,17 +66,17 @@ void Player::dig()
 {
     float stride = 0.01f;
     float maxLength = 10.0f;
-    float curLenfth = 0.0f;
+    float curLength = 0.0f;
     glm::vec3 pos = camera.position;
     const glm::vec3 dir = camera.front * stride;
-    while (curLenfth <= maxLength)
+    while (curLength <= maxLength)
     {
         pos += dir;
         if (World::RunningWorld->digTest(pos))
         {
             break;
         }
-        curLenfth += stride;
+        curLength += stride;
     }
 }
 

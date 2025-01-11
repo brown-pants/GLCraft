@@ -10,11 +10,15 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+Application* Application::app = nullptr;
+
 float Application::FPS = 100.0f;
 FastNoiseLite Application::noise;
 
 Application::Application(int argc, char* argv[])
 {
+	app = this;
+
 	m_window = new Window(1600, 1000, "GLCraft");
 	m_window->setMouseMoveEvent(Controller::MouseMove);
 	m_window->setWindowResizeEvent(Controller::WindowResize);
@@ -29,7 +33,7 @@ Application::Application(int argc, char* argv[])
 
 	//----------------Debug--------------
 	Player::PlayerInfo info;
-	info.position = glm::vec3(0, 0, 0);
+	info.position = glm::vec3(0, 120, 0);
 	info.front = glm::vec3(0, 0, -1);
 	info.height = 0.0f;
 	info.move_speed = 25.0f;

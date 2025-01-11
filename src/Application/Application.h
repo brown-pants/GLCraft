@@ -10,16 +10,24 @@ public:
 	Application(int argc, char* argv[]);
 	~Application();
 	int run();
-	void printInfo();
+
+	inline Window* getWindow() const { return m_window; }
 	
 	static float GetFps();
 
 	static FastNoiseLite& GetNoise() { return noise; }
 
+	static Application* GetApp() { return app; }
+
 private:
+	static Application* app;
+
 	Window* m_window;
 	World *world;
 	static float FPS;
 	static FastNoiseLite noise;
+
+
+	void printInfo();
 };
 #endif

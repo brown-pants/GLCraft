@@ -2,6 +2,8 @@
 #include "Player.h"
 #include <iostream>
 
+bool is_cursor_disabled = true;
+
 void Controller::KeyListen(GLFWwindow *window)
 {
     int moveDir = 0;
@@ -24,6 +26,15 @@ void Controller::KeyListen(GLFWwindow *window)
     if(moveDir)
     {
         Player::GetInstance().move(moveDir);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+    {
+        if (is_cursor_disabled)
+        {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            is_cursor_disabled = false;
+        }
     }
 }
 
@@ -67,6 +78,12 @@ void Controller::MouseMove(double x, double y)
 
 void Controller::MousePress(int button)
 {
+    if (!is_cursor_disabled)
+    {
+        glfwSetInputMode(Application::GetApp()->getWindow()->getGlfwWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        is_cursor_disabled = true;
+        return;
+    }
     if (button == GLFW_MOUSE_BUTTON_LEFT)
     {
         Player::GetInstance().dig();

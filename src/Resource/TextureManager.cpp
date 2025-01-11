@@ -25,10 +25,16 @@ void TextureManager::LoadTextures()
     uint8_t* SandBlockImg = load_texture2d("./resources/textures/SandBlock.png").data;
     uint8_t* SnowBlockSideImg = load_texture2d("./resources/textures/SnowBlockSide.png").data;
     uint8_t* SnowBlockTopImg = load_texture2d("./resources/textures/SnowBlockTop.png").data;
+    uint8_t* LogBlockTopImg = load_texture2d("./resources/textures/LogBlockTop.png").data;
+    uint8_t* LogBlockSideImg = load_texture2d("./resources/textures/LogBlockSide.png").data;
+    uint8_t* LeaveBlockImg = load_texture2d("./resources/textures/LeaveBlock.png").data;
+    uint8_t* CactusBlockTopImg = load_texture2d("./resources/textures/CactusBlockTop.png").data;
+    uint8_t* CactusBlockSideImg = load_texture2d("./resources/textures/CactusBlockSide.png").data;
+    uint8_t* CactusBlockBottomImg = load_texture2d("./resources/textures/CactusBlockBottom.png").data;
     
     //set data in opengl texture
     const uint32_t tex2d_size = tex2d_pxsize * tex2d_pxsize * 4;    //16(px) * 16(px) * 4(rgba)
-    uint8_t tex2d_data[16 * 16 * 4 * 7];    //16(px) * 16(px) * 4(rgba) * 7(count)
+    uint8_t tex2d_data[16 * 16 * 4 * 13];    //16(px) * 16(px) * 4(rgba) * 13(count)
 
     memcpy(tex2d_data, ClayBlockImg, tex2d_size);
     memcpy(tex2d_data + tex2d_size, GrassBlockSideImg, tex2d_size);
@@ -37,6 +43,12 @@ void TextureManager::LoadTextures()
     memcpy(tex2d_data + tex2d_size * 4, SandBlockImg, tex2d_size);
     memcpy(tex2d_data + tex2d_size * 5, SnowBlockSideImg, tex2d_size);
     memcpy(tex2d_data + tex2d_size * 6, SnowBlockTopImg, tex2d_size);
+    memcpy(tex2d_data + tex2d_size * 7, LogBlockTopImg, tex2d_size);
+    memcpy(tex2d_data + tex2d_size * 8, LogBlockSideImg, tex2d_size);
+    memcpy(tex2d_data + tex2d_size * 9, LeaveBlockImg, tex2d_size);
+    memcpy(tex2d_data + tex2d_size * 10, CactusBlockTopImg, tex2d_size);
+    memcpy(tex2d_data + tex2d_size * 11, CactusBlockSideImg, tex2d_size);
+    memcpy(tex2d_data + tex2d_size * 12, CactusBlockBottomImg, tex2d_size);
 
     tex2d.create();
     tex2d.setData((GLubyte *)tex2d_data, tex2d_pxsize, tex2d_pxsize * tex2d_count, GL_TRUE);
@@ -49,6 +61,12 @@ void TextureManager::LoadTextures()
     stbi_image_free(SandBlockImg);
     stbi_image_free(SnowBlockSideImg);
     stbi_image_free(SnowBlockTopImg);
+    stbi_image_free(LogBlockTopImg);
+    stbi_image_free(LogBlockSideImg);
+    stbi_image_free(LeaveBlockImg);
+    stbi_image_free(CactusBlockTopImg);
+    stbi_image_free(CactusBlockSideImg);
+    stbi_image_free(CactusBlockBottomImg);
 
     //sun texture
     TexData sunTex = load_texture2d("./resources/textures/Sun.png");

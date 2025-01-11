@@ -1,7 +1,7 @@
 #include "Block.h"
 
-std::array<Block::Textures, 6> Block::Texs;
-std::array<bool, 6> Block::Transparency;
+std::array<Block::Textures, BLOCK_TYPE_NUM> Block::Texs;
+std::array<bool, BLOCK_TYPE_NUM> Block::Transparency;
 
 Block::Block(Block_Type type) : block_type(type)
 {
@@ -14,6 +14,9 @@ Block::Block(Block_Type type) : block_type(type)
         Transparency[StoneBlock] = false;
         Transparency[SandBlock] = false;
         Transparency[SnowBlock] = false;
+        Transparency[LogBlock] = false;
+        Transparency[LeaveBlock] = true;
+        Transparency[CactusBlock] = true;
 
         Texs[ClayBlock].left = TextureManager::ClayBlock;
         Texs[ClayBlock].right = TextureManager::ClayBlock;
@@ -49,6 +52,27 @@ Block::Block(Block_Type type) : block_type(type)
         Texs[SnowBlock].bottom = TextureManager::ClayBlock;
         Texs[SnowBlock].front = TextureManager::SnowBlockSide;
         Texs[SnowBlock].back = TextureManager::SnowBlockSide;
+
+        Texs[LogBlock].left = TextureManager::LogBlockSide;
+        Texs[LogBlock].right = TextureManager::LogBlockSide;
+        Texs[LogBlock].top = TextureManager::LogBlockTop;
+        Texs[LogBlock].bottom = TextureManager::LogBlockTop;
+        Texs[LogBlock].front = TextureManager::LogBlockSide;
+        Texs[LogBlock].back = TextureManager::LogBlockSide;
+
+        Texs[LeaveBlock].left = TextureManager::LeaveBlock;
+        Texs[LeaveBlock].right = TextureManager::LeaveBlock;
+        Texs[LeaveBlock].top = TextureManager::LeaveBlock;
+        Texs[LeaveBlock].bottom = TextureManager::LeaveBlock;
+        Texs[LeaveBlock].front = TextureManager::LeaveBlock;
+        Texs[LeaveBlock].back = TextureManager::LeaveBlock;
+
+        Texs[CactusBlock].left = TextureManager::CactusBlockSide;
+        Texs[CactusBlock].right = TextureManager::CactusBlockSide;
+        Texs[CactusBlock].top = TextureManager::CactusBlockTop;
+        Texs[CactusBlock].bottom = TextureManager::CactusBlockBottom;
+        Texs[CactusBlock].front = TextureManager::CactusBlockSide;
+        Texs[CactusBlock].back = TextureManager::CactusBlockSide;
 
         isInited = true;
     }

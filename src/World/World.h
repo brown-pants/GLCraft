@@ -16,6 +16,7 @@ public:
     void updateRenderMeshes();
 
     bool digTest(const glm::vec3& pos);
+    bool putTest(const glm::vec3& pos);
 
     static World* RunningWorld;
 

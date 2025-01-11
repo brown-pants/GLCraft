@@ -28,8 +28,11 @@ public:
     void updateMesh();
 
     bool dig(int y, int x, int z);
+    bool put(int y, int x, int z, Block_Type type);
 
 private:
+    void generateTree(int y, int x, int z, int height);
+    void generateCactus(int y, int x, int z, int height);
     Block blocks[CHUNK_Y][CHUNK_X][CHUNK_Z];
 
     Chunk *leftChunk = nullptr;

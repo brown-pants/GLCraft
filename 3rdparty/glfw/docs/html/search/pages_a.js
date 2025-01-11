@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['list_0',['Deprecated List',['../deprecated.html',1,'']]]
+  ['window_20guide_0',['Window guide',['../window_guide.html',1,'']]]
 ];

@@ -14,7 +14,13 @@ public:
         StoneBlock,
         SandBlock,
         SnowBlockSide,
-        SnowBlockTop
+        SnowBlockTop,
+        LogBlockTop,
+        LogBlockSide,
+        LeaveBlock,
+        CactusBlockTop,
+        CactusBlockSide,
+        CactusBlockBottom
     };
     static TextureManager &GetInstance();
     void LoadTextures();
@@ -25,7 +31,7 @@ public:
     GLTexture2D& getMoonTexture() { return tex_moon; }
 
     const uint32_t tex2d_pxsize = 16;   //textures pixmap : 16 * 16
-    const uint32_t tex2d_count = 7;     //textures count
+    const uint32_t tex2d_count = 13;     //textures count
     
 private:
     GLTexture2D tex2d;

@@ -46,9 +46,9 @@ bool World::digTest(const glm::vec3& pos)
     Chunk* chunk = getChunk(glm::vec3(chunkX, 0.0f, chunkZ));
     if (chunk != nullptr)
     {
-        int blockX = (int)pos.x % CHUNK_X;
-        int blockZ = (int)pos.z % CHUNK_Z;
-        int blockY = int(pos.y);
+        int blockX = (int)floor(pos.x) % CHUNK_X;
+        int blockZ = (int)floor(pos.z) % CHUNK_Z;
+        int blockY = (int)pos.y;
         if (blockX < 0)
         {
             blockX += CHUNK_X;
@@ -66,6 +66,11 @@ bool World::digTest(const glm::vec3& pos)
         else return false;
     }
 
+    return false;
+}
+
+bool World::putTest(const glm::vec3& pos)
+{
     return false;
 }
 

@@ -1,6 +1,7 @@
 #ifndef __CONTROLLER_H__
 #define __CONTROLLER_H__
-#include <glfw/glfw3.h>
+
+#include "../Application/Application.h"
 
 class Controller
 {

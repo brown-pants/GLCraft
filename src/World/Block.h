@@ -1,5 +1,6 @@
 #ifndef __BLOCK_H__
 #define __BLOCK_H__
+#define BLOCK_TYPE_NUM 9
 #include <array>
 #include "../Resource/TextureManager.h"
 
@@ -10,7 +11,10 @@ enum Block_Type
     GrassBlock,
     StoneBlock,
     SandBlock,
-    SnowBlock
+    SnowBlock,
+    LogBlock,
+    LeaveBlock,
+    CactusBlock
 };
 
 class Block
@@ -37,8 +41,8 @@ private:
     {
         TextureManager::TexureName left, right, top, bottom, front, back;
     };
-    static std::array<Textures, 6> Texs;
-    static std::array<bool, 6> Transparency;
+    static std::array<Textures, BLOCK_TYPE_NUM> Texs;
+    static std::array<bool, BLOCK_TYPE_NUM> Transparency;
     Block_Type block_type;
 };
 

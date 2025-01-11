@@ -117,6 +117,7 @@ void Renderer::drawBlocks()
     squareShader.setInt("tex2d_count", TextureManager::GetInstance().tex2d_count);
     squareShader.setVec3("sunPos", World::RunningWorld->getSunPosition());
     squareShader.setVec3("moonPos", World::RunningWorld->getMoonPosition());
+    squareShader.setVec3("skyColor", World::RunningWorld->getSkyColor());
 
     //render...
     squareShader.bind();
