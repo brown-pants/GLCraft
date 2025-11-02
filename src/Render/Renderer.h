@@ -13,12 +13,14 @@ public:
     void drawCrosshair();
     void drawPlanet();
     void updateSquares(const std::vector<float> &vOffsets, const std::vector<glm::mat4> &matrices);
+    void drawLoadingBackground();
 
     uint32_t getSquareCount() const { return squareCount; }
 
 private:
     Renderer();
 
+    Mesh loadingMesh;
     Mesh squareMesh;
     Mesh crosshairMesh;
     Mesh planetMesh;

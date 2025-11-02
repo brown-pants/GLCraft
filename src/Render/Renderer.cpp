@@ -103,6 +103,30 @@ void Renderer::init()
     planetMesh.vao.addVBO(1, planetMesh.vbo, 2, 5 * sizeof(float), (const void*)(3 * sizeof(float)));
     planetMesh.ebo.setData(sizeof(planet_indices), planet_indices);
     planetMesh.vao.setEBO(planetMesh.ebo);
+
+    // loading mesh
+    c = 0.7;
+    float loading_vertices[] = {
+        c, c - 0.5f,    1.0f, 1.0f,  // right top
+        c, -c + 0.4f,   1.0f, 0.0f,  // right bottom
+        -c, -c + 0.4f,  0.0f, 0.0f,  // left bottom
+        -c, c - 0.5f,   0.0f, 1.0f   // left top
+    };
+
+    unsigned int loading_indices[] = {
+        0, 1, 3, // first triangle
+        1, 2, 3  // second triangle
+    };
+    
+    loadingMesh.vao.create();
+    loadingMesh.vbo.create();
+    loadingMesh.ebo.create();
+    
+    loadingMesh.vbo.setData(sizeof(loading_vertices), loading_vertices);
+    loadingMesh.vao.addVBO(0, loadingMesh.vbo, 2, 4 * sizeof(float), 0);
+    loadingMesh.vao.addVBO(1, loadingMesh.vbo, 2, 4 * sizeof(float), (const void *)(2 * sizeof(float)));
+    loadingMesh.ebo.setData(sizeof(loading_indices), loading_indices);
+    loadingMesh.vao.setEBO(loadingMesh.ebo);
 }
 
 void Renderer::drawBlocks()
@@ -178,4 +202,17 @@ void Renderer::updateSquares(const std::vector<float> &vOffsets, const std::vect
     squareMesh.instance_vbos[0].setData(vOffsets.size() * sizeof(float), &vOffsets[0]);
     squareMesh.instance_vbos[1].setData(matrices.size() * sizeof(glm::mat4), &matrices[0][0]);
     squareCount = matrices.size();
+}
+
+void Renderer::drawLoadingBackground()
+{
+    GLShader &shader = ShaderManager::GetInstance().getShader(ShaderManager::Texture);
+    GLTexture2D &texture = TextureManager::GetInstance().getLoadingTexture();
+    loadingMesh.vao.bind();
+    texture.bind();
+    shader.bind();
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    shader.unbind();
+    texture.unbind();
+    loadingMesh.vao.unbind();
 }

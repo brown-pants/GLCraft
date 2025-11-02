@@ -29,13 +29,14 @@ public:
 
     GLTexture2D& getSunTexture() { return tex_sun; }
     GLTexture2D& getMoonTexture() { return tex_moon; }
+    GLTexture2D& getLoadingTexture() { return tex_loading; }
 
     const uint32_t tex2d_pxsize = 16;   //textures pixmap : 16 * 16
     const uint32_t tex2d_count = 13;     //textures count
     
 private:
     GLTexture2D tex2d;
-    GLTexture2D tex_sun, tex_moon;
+    GLTexture2D tex_sun, tex_moon, tex_loading;
 
     TextureManager();
     struct TexData

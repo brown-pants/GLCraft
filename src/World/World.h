@@ -9,14 +9,22 @@
 class World
 {
 public:
-    World(const glm::vec3& playerPos);
+    World();
+    ~World();
+
+    void init(const glm::vec3& playerPos);
+
+    void setSunAngle(float angle) { sunRotateAngle = angle; }
+    float sunAngle() const { return sunRotateAngle; }
+
     void loadChunk(const glm::vec3 &position);
     Chunk *getChunk(const glm::vec3 &position);
 
     void updateRenderMeshes();
 
     bool digTest(const glm::vec3& pos);
-    bool putTest(const glm::vec3& pos);
+    bool putTest(const glm::vec3& pos, const glm::vec3& dir, Block_Type block_type);
+    bool touchTest(const glm::vec3& pos);
 
     static World* RunningWorld;
 
@@ -30,6 +38,8 @@ public:
 
     glm::vec3 getSkyColor() const;
 
+    void stop();
+
 private:
     void updateMeshes();
     void update();
@@ -41,6 +51,7 @@ private:
     std::vector<glm::mat4> matrices;
 
     std::thread* th_loadWorld;
+    bool m_running;
 
     float sunRotateAngle = 0.0;
 };

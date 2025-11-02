@@ -10,6 +10,7 @@ public:
     static void MouseMove(double x, double y);
     static void MousePress(int button);
     static void WindowResize(int width, int height);
+    static void scrollWheel(double xpos, double ypos);
 };
 
 #endif

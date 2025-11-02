@@ -11,14 +11,15 @@ public:
     {
         Square = 0,
         Crosshair,
-        Planet
+        Planet,
+        Texture
     };
     static ShaderManager &GetInstance();
     void LoadShaders();
     GLShader &getShader(ShaderName name) { return shaders[name]; }
 
 private:
-    std::array<GLShader, 3> shaders;
+    std::array<GLShader, 4> shaders;
     GLShader load_shader(const std::string &vs_filename, const std::string &fs_filename);
 
     ShaderManager();

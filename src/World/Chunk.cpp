@@ -12,6 +12,7 @@ glm::mat4 Rotate_front = glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm:
 glm::mat4 Rotate_back = glm::mat4(1.0f);
 
 glm::mat4 Translate_cactus = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0f, 0.1f));
+glm::mat4 Translate_global = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
 
 Chunk::Chunk(glm::vec3 position, Chunk* leftChunk, Chunk* rightChunk, Chunk* frontChunk, Chunk* backChunk) : position(position)
 {
@@ -58,17 +59,20 @@ Chunk::Chunk(glm::vec3 position, Chunk* leftChunk, Chunk* rightChunk, Chunk* fro
 
                 if (y > max_y)
                 {
-                    continue;
+                    int type = Application::GetApp()->blockChanged(position.x, position.z, x, y, z);
+                    if (type != -1)
+                    {
+                        blocks[y][x][z] = (Block_Type)type;
+                    }
                 }
-                if (y < 60)
+                else if (y < 60)
                 {
-                    blocks[y][x][z] = StoneBlock;
-                    continue;
+                    loadBlock(x, y, z, StoneBlock);
                 }
-                if (temperature > 0.3f)  //É³Ä®
+                else if (temperature > 0.3f)  //É³Ä®
                 {
-                    blocks[y][x][z] = SandBlock;
-                    //ÏÉÈËÕÆ
+                    loadBlock(x, y, z, SandBlock);
+                    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                     if (y == max_y)
                     {
                         float noise = PerlinNoise::Noise_2d(90, 1, position.x + x, position.z + z);
@@ -79,11 +83,11 @@ Chunk::Chunk(glm::vec3 position, Chunk* leftChunk, Chunk* rightChunk, Chunk* fro
                         }
                     }
                 }
-                else if (temperature > 0.0f) //ÂÌÖÞ
+                else if (temperature > 0.0f) //ï¿½ï¿½ï¿½ï¿½
                 {
                     if (y == max_y)
                     {
-                        blocks[y][x][z] = GrassBlock;
+                        loadBlock(x, y, z, GrassBlock);
                         //generate tree
                         if (tree_noise < 0.3 && x == tree_x && z == tree_z)
                         {
@@ -93,18 +97,18 @@ Chunk::Chunk(glm::vec3 position, Chunk* leftChunk, Chunk* rightChunk, Chunk* fro
                     }
                     else
                     {
-                        blocks[y][x][z] = ClayBlock;
+                        loadBlock(x, y, z, ClayBlock);
                     }
                 }
-                else  //Ñ©µØ
+                else  //Ñ©ï¿½ï¿½
                 {
                     if (y == max_y)
                     {
-                        blocks[y][x][z] = SnowBlock;
+                        loadBlock(x, y, z, SnowBlock);
                     }
                     else
                     {
-                        blocks[y][x][z] = ClayBlock;
+                        loadBlock(x, y, z, ClayBlock);
                     }
                 }
             }
@@ -251,36 +255,42 @@ void Chunk::updateMesh()
                 if (leftBlockTrans)
                 {
                     vOffsets.push_back(block.getLeftTexture());
-                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x - 0.5f, y, z)) * Rotate_left * (block.type() == CactusBlock ? Translate_cactus : glm::mat4(1.0f)));
+                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x - 0.5f, y, z)) * Translate_global * Rotate_left * (block.type() == CactusBlock ? Translate_cactus : glm::mat4(1.0f)));
                 }
                 if (rightBlockTrans)
                 {
                     vOffsets.push_back(block.getRightTexture());
-                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x + 0.5f, y, z)) * Rotate_right * (block.type() == CactusBlock ? Translate_cactus : glm::mat4(1.0f)));
+                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x + 0.5f, y, z)) * Translate_global * Rotate_right * (block.type() == CactusBlock ? Translate_cactus : glm::mat4(1.0f)));
                 }
                 if (topBlockTrans)
                 {
                     vOffsets.push_back(block.getTopTexture());
-                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y + 0.5f, z)) * Rotate_top);
+                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y + 0.5f, z)) * Translate_global * Rotate_top);
                 }
                 if (bottomBlockTrans)
                 {
                     vOffsets.push_back(block.getBottomTexture());
-                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y - 0.5f, z)) * Rotate_bottom);
+                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y - 0.5f, z)) * Translate_global * Rotate_bottom);
                 }
                 if (frontBlockTrans)
                 {
                     vOffsets.push_back(block.getFrontTexture());
-                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y, z + 0.5f)) * Rotate_front * (block.type() == CactusBlock ? Translate_cactus : glm::mat4(1.0f)));
+                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y, z + 0.5f)) * Translate_global * Rotate_front * (block.type() == CactusBlock ? Translate_cactus : glm::mat4(1.0f)));
                 }
                 if (backBlockTrans)
                 {
                     vOffsets.push_back(block.getBackTexture());
-                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y, z - 0.5f)) * Rotate_back * (block.type() == CactusBlock ? Translate_cactus : glm::mat4(1.0f)));
+                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y, z - 0.5f)) * Translate_global * Rotate_back * (block.type() == CactusBlock ? Translate_cactus : glm::mat4(1.0f)));
                 }
             }
         }
     }
+}
+
+int Chunk::getBlockType(int y, int x, int z)
+{
+    if (y < 0 || y >= CHUNK_Y || x < 0 || x >= CHUNK_X || z < 0 || z >= CHUNK_Z) return -1;
+    return blocks[y][x][z].type();
 }
 
 bool Chunk::dig(int y, int x, int z)
@@ -290,6 +300,7 @@ bool Chunk::dig(int y, int x, int z)
     if (blocks[y][x][z].type() != Air)
     {
         blocks[y][x][z] = Air;
+        Application::GetApp()->changeBlock(position.x, position.z, x, y, z, Air);
         updateMesh();
         if (this->leftChunk != nullptr)
         {
@@ -318,6 +329,7 @@ bool Chunk::put(int y, int x, int z, Block_Type type)
     if (blocks[y][x][z].type() == Air)
     {
         blocks[y][x][z] = type;
+        Application::GetApp()->changeBlock(position.x, position.z, x, y, z, type);
         updateMesh();
         if (this->leftChunk != nullptr)
         {
@@ -344,7 +356,7 @@ void Chunk::generateTree(int y, int x, int z, int height)
 {
     for (int i = 1; i <= height; i++)
     {
-        blocks[y + i][x][z] = LogBlock;
+        loadBlock(x, y + i, z, LogBlock);
     }
     for (int _y = 0; _y < 2; _y++)
     {
@@ -356,7 +368,7 @@ void Chunk::generateTree(int y, int x, int z, int height)
                 {
                     continue;
                 }
-                blocks[y + _y + height - 1][x + _x][z + _z] = LeaveBlock;
+                loadBlock(x + _x, y + _y + height - 1, z + _z, LeaveBlock);
             }
         }
     }
@@ -365,20 +377,33 @@ void Chunk::generateTree(int y, int x, int z, int height)
     {
         for (int _z = -1; _z <= 1; _z++)
         {
-            blocks[height + y + 1][x + _x][z + _z] = LeaveBlock;
+            loadBlock(x + _x, height + y + 1, z + _z, LeaveBlock);
         }
     }
-    blocks[height + y + 2][x - 1][z] = LeaveBlock;
-    blocks[height + y + 2][x][z] = LeaveBlock;
-    blocks[height + y + 2][x + 1][z] = LeaveBlock;
-    blocks[height + y + 2][x][z - 1] = LeaveBlock;
-    blocks[height + y + 2][x][z + 1] = LeaveBlock;
+    loadBlock(x, height + y + 2, z, LeaveBlock);
+    loadBlock(x - 1, height + y + 2, z, LeaveBlock);
+    loadBlock(x + 1, height + y + 2, z, LeaveBlock);
+    loadBlock(x, height + y + 2, z - 1, LeaveBlock);
+    loadBlock(x, height + y + 2, z + 1, LeaveBlock);
 }
 
 void Chunk::generateCactus(int y, int x, int z, int height)
 {
     for (int i = 1; i <= height; i++)
     {
-        blocks[y + i][x][z] = CactusBlock;
+        loadBlock(x, y + i, z, CactusBlock);
+    }
+}
+
+void Chunk::loadBlock(int x, int y, int z, Block_Type block_type)
+{
+    int type = Application::GetApp()->blockChanged(position.x, position.z, x, y, z);
+    if (type != -1)
+    {
+        blocks[y][x][z] = (Block_Type)type;
+    }
+    else
+    {
+        blocks[y][x][z] = block_type;
     }
 }

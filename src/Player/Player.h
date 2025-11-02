@@ -1,6 +1,7 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 #include "../Math/Camera.h"
+#include "../World/Block.h"
 
 class Player
 {
@@ -27,6 +28,7 @@ public:
     inline glm::vec3 getPosition() const { return playerInfo.position; }
 
     void dig();
+    void put(Block_Type block_type);
 
 private:
     Player();

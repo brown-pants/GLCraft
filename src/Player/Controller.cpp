@@ -2,7 +2,7 @@
 #include "Player.h"
 #include <iostream>
 
-bool is_cursor_disabled = true;
+bool is_cursor_disabled = false;
 
 void Controller::KeyListen(GLFWwindow *window)
 {
@@ -38,6 +38,7 @@ void Controller::KeyListen(GLFWwindow *window)
     }
 }
 
+static bool firstMouse = true;
 void Controller::MouseMove(double x, double y)
 {
     if(!is_cursor_disabled)
@@ -46,12 +47,14 @@ void Controller::MouseMove(double x, double y)
     }
     float xpos = static_cast<float>(x);
     float ypos = static_cast<float>(y);
-    static float lastX, lastY, yaw = -90.0f, pitch = 0.0f;
-    static bool firstMouse = true;
+    static float lastX, lastY, yaw, pitch;
     if (firstMouse)
     {
         lastX = xpos;
         lastY = ypos;
+        glm::vec3 fornt = Player::GetInstance().getCamera().front;
+        pitch = glm::degrees(asin(fornt.y));
+        yaw = glm::degrees(atan2(fornt.z, fornt.x));
         firstMouse = false;
     }
 
@@ -80,12 +83,14 @@ void Controller::MouseMove(double x, double y)
     Player::GetInstance().setFront(glm::normalize(newFront));
 }
 
+static int curBlock = ClayBlock;
 void Controller::MousePress(int button)
 {
     if (!is_cursor_disabled)
     {
         glfwSetInputMode(Application::GetApp()->getWindow()->getGlfwWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         is_cursor_disabled = true;
+        firstMouse = true;
         return;
     }
     if (button == GLFW_MOUSE_BUTTON_LEFT)
@@ -94,11 +99,35 @@ void Controller::MousePress(int button)
     }
     else if (button == GLFW_MOUSE_BUTTON_RIGHT)
     {
-
+        Player::GetInstance().put((Block_Type)curBlock);
     }
 }
 
 void Controller::WindowResize(int width, int height)
 {
+    if (height == 0)
+    {
+        return;
+    }
     Player::GetInstance().getCamera().aspect = (float)width / (float)height;
+}
+
+void Controller::scrollWheel(double xpos, double ypos)
+{
+    if (ypos > 0)
+    {
+        curBlock += 1;
+    }
+    else
+    {
+        curBlock -= 1;
+    }
+    if (curBlock == 9)
+    {
+        curBlock = 1;
+    }
+    else if (curBlock == 0)
+    {
+        curBlock = 8;
+    }
 }

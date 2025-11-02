@@ -15,6 +15,7 @@ void ShaderManager::LoadShaders()
     shaders[Square] = load_shader("./resources/shaders/Square.vs", "./resources/shaders/Square.fs");
     shaders[Crosshair] = load_shader("./resources/shaders/Crosshair.vs", "./resources/shaders/Crosshair.fs");
     shaders[Planet] = load_shader("./resources/shaders/Planet.vs", "./resources/shaders/Planet.fs");
+    shaders[Texture] = load_shader("./resources/shaders/Texture.vs", "./resources/shaders/Texture.fs");
 }
 
 GLShader ShaderManager::load_shader(const std::string &vs_filename, const std::string &fs_filename)

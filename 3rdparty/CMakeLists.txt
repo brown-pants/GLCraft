@@ -15,4 +15,9 @@ if(NOT TARGET glfw)
     set_target_properties(update_mappings PROPERTIES FOLDER ${ThirdPartyFolder}/glfw)
 endif()
 
+if(NOT TARGET SQLiteCpp)
+    add_subdirectory(SQLiteCpp)
+    set_target_properties(SQLiteCpp PROPERTIES FOLDER ${ThirdPartyFolder}/SQLiteCpp)
+endif()
+
 

@@ -63,14 +63,67 @@ bool World::digTest(const glm::vec3& pos)
             updateMeshes();
             return true;
         }
-        else return false;
     }
-
     return false;
 }
 
-bool World::putTest(const glm::vec3& pos)
+bool World::putTest(const glm::vec3& pos, const glm::vec3& dir, Block_Type block_type)
 {
+    if (touchTest(pos))
+    {
+        glm::vec3 putPos = pos - dir;
+        int chunkX = floor(putPos.x / CHUNK_X) * CHUNK_X;
+        int chunkZ = floor(putPos.z / CHUNK_Z) * CHUNK_Z;
+        Chunk* chunk = getChunk(glm::vec3(chunkX, 0.0f, chunkZ));
+        if (chunk != nullptr)
+        {
+            int blockX = (int)floor(putPos.x) % CHUNK_X;
+            int blockZ = (int)floor(putPos.z) % CHUNK_Z;
+            int blockY = (int)putPos.y;
+            if (blockX < 0)
+            {
+                blockX += CHUNK_X;
+            }
+            if (blockZ < 0)
+            {
+                blockZ += CHUNK_Z;
+            }
+            std::lock_guard<std::mutex> guard(mtx);
+            if (chunk->put(blockY, blockX, blockZ, block_type))
+            {
+                updateMeshes();
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool World::touchTest(const glm::vec3& pos)
+{
+    int chunkX = floor(pos.x / CHUNK_X) * CHUNK_X;
+    int chunkZ = floor(pos.z / CHUNK_Z) * CHUNK_Z;
+    Chunk* chunk = getChunk(glm::vec3(chunkX, 0.0f, chunkZ));
+    if (chunk != nullptr)
+    {
+        int blockX = (int)floor(pos.x) % CHUNK_X;
+        int blockZ = (int)floor(pos.z) % CHUNK_Z;
+        int blockY = (int)pos.y;
+        if (blockX < 0)
+        {
+            blockX += CHUNK_X;
+        }
+        if (blockZ < 0)
+        {
+            blockZ += CHUNK_Z;
+        }
+        int type = chunk->getBlockType(blockY, blockX, blockZ);
+        if (type != -1 && type != Air)
+        {
+            return true;
+            
+        }
+    }
     return false;
 }
 
@@ -104,19 +157,34 @@ void World::updateMeshes()
     }
 }
 
-World::World(const glm::vec3& playerPos)
+World::World() : m_running(true)
+{
+    RunningWorld = this;
+}
+
+void World::init(const glm::vec3& playerPos)
 {
     float x = floor(playerPos.x / CHUNK_X) * CHUNK_X;
     float z = floor(playerPos.z / CHUNK_Z) * CHUNK_Z;
     loadChunk(glm::vec3(x, 0, z));
     update();
-    RunningWorld = this;
     th_loadWorld = new std::thread([this]() {
-        while (true)
+        while (m_running)
         {
             this->update();
         }
         });
+}
+
+void World::stop()
+{
+    m_running = false;
+}
+
+World::~World()
+{
+    th_loadWorld->join();
+    delete th_loadWorld;
 }
 
 void World::update()
@@ -125,6 +193,10 @@ void World::update()
     glm::vec3 playerPos = Player::GetInstance().getPosition();
     for(auto it = edgeChunks.begin(); it != edgeChunks.end(); )
     {
+        if (!m_running)
+        {
+            break;
+        }
         Chunk *edgeChunk = *it;
         glm::vec3 chunkPos = edgeChunk->getPosition();
 

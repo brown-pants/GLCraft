@@ -72,17 +72,19 @@ void TextureManager::LoadTextures()
     TexData sunTex = load_texture2d("./resources/textures/Sun.png");
     tex_sun.create();
     tex_sun.setData((GLubyte*)sunTex.data, sunTex.width, sunTex.height, GL_TRUE);
-
-    //free images
     stbi_image_free(sunTex.data);
 
     //moon texture
     TexData moonTex = load_texture2d("./resources/textures/Moon.png");
     tex_moon.create();
     tex_moon.setData((GLubyte*)moonTex.data, moonTex.width, moonTex.height, GL_TRUE);
-
-    //free images
     stbi_image_free(moonTex.data);
+    
+    //loading texture
+    TexData loadingTex = load_texture2d("./resources/textures/load.png");
+    tex_loading.create();
+    tex_loading.setData((GLubyte*)loadingTex.data, loadingTex.width, loadingTex.height, GL_TRUE);
+    stbi_image_free(loadingTex.data);
 }
 
 TextureManager::TexData TextureManager::load_texture2d(const std::string &filename) const

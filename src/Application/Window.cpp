@@ -15,14 +15,13 @@ Window::Window(int width, int height, const char* title)
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
     }
-    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    
     glViewport(0, 0, width, height);
     glfwSetWindowUserPointer(m_window, &m_events);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND); 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_CULL_FACE);
 }
 
 Window::~Window()
@@ -40,10 +39,14 @@ void Window::show()
     glfwShowWindow(m_window);
 }
 
+void Window::close()
+{
+    glfwSetWindowShouldClose(m_window, 1);
+}
+
 void Window::update() const
 {
     glfwSwapBuffers(m_window);
-    //glClearColor(0.1f, 0.7f, 0.7f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glfwPollEvents();
 }
@@ -75,4 +78,12 @@ void Window::setMousePressEvent(const std::function<void(int)>& f)
     glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods) {
         if (action == GLFW_PRESS)((Events*)glfwGetWindowUserPointer(window))->mousePress(button);
         });
+}
+
+void Window::setScrollEvent(const std::function<void(double, double)>& f)
+{
+    m_events.scrollWheel = f;
+    glfwSetScrollCallback(m_window, [](GLFWwindow* window, double xpos, double ypos){
+        ((Events*)glfwGetWindowUserPointer(window))->scrollWheel(xpos, ypos);
+    });
 }
