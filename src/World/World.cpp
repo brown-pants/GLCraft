@@ -3,15 +3,10 @@
 #include "../Player/Player.h"
 #include "../Application/Application.h"
 
-#include <iostream>
-#include <mutex>
-
 #define CHUNK_LOAD_DISTANCE 250
 #define CHUNK_DELETE_DISTANCE 300
 
 World* World::RunningWorld = nullptr;
-
-std::mutex mtx;
 
 void World::loadChunk(const glm::vec3 &position)
 {
@@ -32,10 +27,11 @@ void World::loadChunk(const glm::vec3 &position)
 
 void World::updateRenderMeshes()
 {
-    if (mtx.try_lock())
+    std::unique_lock<std::mutex> lock(mtx, std::defer_lock);
+    if (isUpdateRenderMeshes && lock.try_lock())
     {
         Renderer::GetInstance().updateSquares(vOffsets, matrices);
-        mtx.unlock();
+        isUpdateRenderMeshes = false;
     }
 }
 
@@ -92,9 +88,9 @@ bool World::putTest(const glm::vec3& pos, const glm::vec3& dir, Block_Type block
             if (chunk->put(blockY, blockX, blockZ, block_type))
             {
                 updateMeshes();
-                return true;
             }
         }
+        return true;
     }
     return false;
 }
@@ -155,17 +151,20 @@ void World::updateMeshes()
         vOffsets.insert(vOffsets.end(), chunk_vOffsets.begin(), chunk_vOffsets.end());
         matrices.insert(matrices.end(), chunk_matrices.begin(), chunk_matrices.end());
     }
+    isUpdateRenderMeshes = true;
 }
 
-World::World() : m_running(true)
+World::World() 
+    : m_running(true), isUpdateRenderMeshes(false)
 {
     RunningWorld = this;
 }
 
-void World::init(const glm::vec3& playerPos)
+void World::init(const glm::vec3& playerPos, float sunAngle)
 {
     float x = floor(playerPos.x / CHUNK_X) * CHUNK_X;
     float z = floor(playerPos.z / CHUNK_Z) * CHUNK_Z;
+    sunRotateAngle = sunAngle;
     loadChunk(glm::vec3(x, 0, z));
     update();
     th_loadWorld = new std::thread([this]() {

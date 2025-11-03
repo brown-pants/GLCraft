@@ -38,7 +38,6 @@ Application::Application(int argc, char* argv[])
 			m_window->close();
 			return;
 		}
-		world->init(Player::GetInstance().getPosition());
 		isLoading = false;
 		m_window->setMouseMoveEvent(Controller::MouseMove);
 		m_window->setMousePressEvent(Controller::MousePress);
@@ -328,7 +327,6 @@ bool Application::loadWorld(const std::string &name)
 			info.move_speed = 25.0f;
 			Player::GetInstance().init(info);
 			PerlinNoise::Init(seed);
-			world->setSunAngle(sunAngle);
 			// load changed blocks
 			SQLite::Statement query(*curDB, "SELECT chunk_x, chunk_z, block_x, block_y, block_z, block_type FROM change");
 			while (query.executeStep())
@@ -342,6 +340,7 @@ bool Application::loadWorld(const std::string &name)
 				int block_type = query.getColumn(5);
 				m_changedBlocks.insert(std::pair<BlockPosition, Block_Type>(blockPos, (Block_Type)block_type));
 			}
+			world->init(Player::GetInstance().getPosition(), sunAngle);
 		}
 		else
 		{

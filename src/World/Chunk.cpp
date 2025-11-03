@@ -252,12 +252,12 @@ void Chunk::updateMesh()
                 }
 
                 //update
-                if (leftBlockTrans)
+                if (leftBlockTrans || block.type() == CactusBlock)
                 {
                     vOffsets.push_back(block.getLeftTexture());
                     matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x - 0.5f, y, z)) * Translate_global * Rotate_left * (block.type() == CactusBlock ? Translate_cactus : glm::mat4(1.0f)));
                 }
-                if (rightBlockTrans)
+                if (rightBlockTrans || block.type() == CactusBlock)
                 {
                     vOffsets.push_back(block.getRightTexture());
                     matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x + 0.5f, y, z)) * Translate_global * Rotate_right * (block.type() == CactusBlock ? Translate_cactus : glm::mat4(1.0f)));
@@ -272,12 +272,12 @@ void Chunk::updateMesh()
                     vOffsets.push_back(block.getBottomTexture());
                     matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y - 0.5f, z)) * Translate_global * Rotate_bottom);
                 }
-                if (frontBlockTrans)
+                if (frontBlockTrans || block.type() == CactusBlock)
                 {
                     vOffsets.push_back(block.getFrontTexture());
                     matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y, z + 0.5f)) * Translate_global * Rotate_front * (block.type() == CactusBlock ? Translate_cactus : glm::mat4(1.0f)));
                 }
-                if (backBlockTrans)
+                if (backBlockTrans || block.type() == CactusBlock)
                 {
                     vOffsets.push_back(block.getBackTexture());
                     matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y, z - 0.5f)) * Translate_global * Rotate_back * (block.type() == CactusBlock ? Translate_cactus : glm::mat4(1.0f)));

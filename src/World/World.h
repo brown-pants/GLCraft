@@ -3,6 +3,7 @@
 #include "Chunk.h"
 #include <list>
 #include <queue>
+#include <mutex>
 #include <thread>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -12,9 +13,8 @@ public:
     World();
     ~World();
 
-    void init(const glm::vec3& playerPos);
+    void init(const glm::vec3& playerPos, float sunAngle);
 
-    void setSunAngle(float angle) { sunRotateAngle = angle; }
     float sunAngle() const { return sunRotateAngle; }
 
     void loadChunk(const glm::vec3 &position);
@@ -49,11 +49,14 @@ private:
 
     std::vector<float> vOffsets;
     std::vector<glm::mat4> matrices;
-
+    
     std::thread* th_loadWorld;
-    bool m_running;
+    std::mutex mtx;
 
-    float sunRotateAngle = 0.0;
+    bool m_running;
+    bool isUpdateRenderMeshes;
+
+    float sunRotateAngle;
 };
 
 #endif
