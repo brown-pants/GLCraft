@@ -72,11 +72,11 @@ void Window::setWindowResizeEvent(const std::function<void(int, int)>& f)
     });
 }
 
-void Window::setMousePressEvent(const std::function<void(int)>& f)
+void Window::setMousePressEvent(const std::function<void(int, int)>& f)
 {
     m_events.mousePress = f;
     glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods) {
-        if (action == GLFW_PRESS)((Events*)glfwGetWindowUserPointer(window))->mousePress(button);
+        ((Events*)glfwGetWindowUserPointer(window))->mousePress(button, action);
         });
 }
 
@@ -84,6 +84,7 @@ void Window::setScrollEvent(const std::function<void(double, double)>& f)
 {
     m_events.scrollWheel = f;
     glfwSetScrollCallback(m_window, [](GLFWwindow* window, double xpos, double ypos){
+        
         ((Events*)glfwGetWindowUserPointer(window))->scrollWheel(xpos, ypos);
     });
 }

@@ -1,6 +1,7 @@
 #include "Chunk.h"
 #include "../Application/Application.h"
 #include "../Math/Noise/PerlinNoise.h"
+#include "../Player/Player.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 
@@ -326,6 +327,19 @@ bool Chunk::dig(int y, int x, int z)
 bool Chunk::put(int y, int x, int z, Block_Type type)
 {
     if (y < 0 || y >= CHUNK_Y || x < 0 || x >= CHUNK_X || z < 0 || z >= CHUNK_Z) return false;
+    
+    if (Player::GetInstance().isBindPhysical())
+    {
+        Block_Type temp = blocks[y][x][z].type();
+        blocks[y][x][z] = type;
+        bool sign = Player::GetInstance().obstacleTest(Player::GetInstance().getPosition());
+        blocks[y][x][z] = temp;
+        if (sign)
+        {
+            return false;
+        }
+    }
+
     if (blocks[y][x][z].type() == Air)
     {
         blocks[y][x][z] = type;

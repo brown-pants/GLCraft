@@ -15,7 +15,7 @@ public:
 
     void init(const glm::vec3& playerPos, float sunAngle);
 
-    float sunAngle() const { return sunRotateAngle; }
+    float &sunAngle() { return sunRotateAngle; }
 
     void loadChunk(const glm::vec3 &position);
     Chunk *getChunk(const glm::vec3 &position);
@@ -25,6 +25,7 @@ public:
     bool digTest(const glm::vec3& pos);
     bool putTest(const glm::vec3& pos, const glm::vec3& dir, Block_Type block_type);
     bool touchTest(const glm::vec3& pos);
+    bool physicalTest(const glm::vec3 pos);
 
     static World* RunningWorld;
 
@@ -39,6 +40,7 @@ public:
     glm::vec3 getSkyColor() const;
 
     void stop();
+
 
 private:
     void updateMeshes();

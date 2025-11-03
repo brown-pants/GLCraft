@@ -1,6 +1,7 @@
 #include "Controller.h"
 #include "Player.h"
 #include <iostream>
+#include <ImGui/imgui.h>
 
 bool is_cursor_disabled = false;
 
@@ -36,6 +37,17 @@ void Controller::KeyListen(GLFWwindow *window)
             is_cursor_disabled = false;
         }
     }
+
+    static bool spaceRelease = true;
+    if (spaceRelease && glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) 
+    {
+        Player::GetInstance().jump();
+        spaceRelease = false;
+    }
+    else if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE) 
+    {
+        spaceRelease = true;
+    }
 }
 
 static bool firstMouse = true;
@@ -43,6 +55,8 @@ void Controller::MouseMove(double x, double y)
 {
     if(!is_cursor_disabled)
     {
+        ImGuiIO& io = ImGui::GetIO();
+        io.AddMousePosEvent((float)x, (float)y);
         return;
     }
     float xpos = static_cast<float>(x);
@@ -84,13 +98,23 @@ void Controller::MouseMove(double x, double y)
 }
 
 static int curBlock = ClayBlock;
-void Controller::MousePress(int button)
+void Controller::MousePress(int button, int action)
 {
+    ImGuiIO& io = ImGui::GetIO();
+    io.AddMouseButtonEvent(button, action == GLFW_PRESS);
+    if (io.WantCaptureMouse) 
+    {
+        return;
+    }
     if (!is_cursor_disabled)
     {
         glfwSetInputMode(Application::GetApp()->getWindow()->getGlfwWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         is_cursor_disabled = true;
         firstMouse = true;
+        return;
+    }
+    if (action != GLFW_PRESS)
+    {
         return;
     }
     if (button == GLFW_MOUSE_BUTTON_LEFT)
@@ -130,4 +154,21 @@ void Controller::scrollWheel(double xpos, double ypos)
     {
         curBlock = 8;
     }
+}
+
+std::string Controller::getCurBlock()
+{
+    static std::string blockNames[] = 
+    {
+        "Air",
+        "ClayBlock",
+        "GrassBlock",
+        "StoneBlock",
+        "SandBlock",
+        "SnowBlock",
+        "LogBlock",
+        "LeaveBlock",
+        "CactusBlock"
+    };
+    return blockNames[curBlock];
 }

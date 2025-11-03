@@ -9,6 +9,9 @@
 #include <filesystem>
 #include <string.h>
 #include <glm/gtc/matrix_transform.hpp>
+#include <ImGui/imgui.h>
+#include <ImGui/imgui_impl_glfw.h>
+#include <ImGui/imgui_impl_opengl3.h>
 
 Application* Application::app = nullptr;
 
@@ -44,6 +47,7 @@ Application::Application(int argc, char* argv[])
 		m_window->setScrollEvent(Controller::scrollWheel);
 	});
 
+	InitImGui();
 }
 
 Application::~Application()
@@ -70,7 +74,7 @@ int Application::run()
 			continue;
 		}
 
-		float time = glfwGetTime();
+		renderImGui();
 		glm::vec3 skyColor = world->getSkyColor();
 		glClearColor(skyColor.r, skyColor.g, skyColor.b, 1.0f);
 		m_window->update();
@@ -81,9 +85,7 @@ int Application::run()
 		Renderer::GetInstance().drawPlanet();
 		world->updateRenderMeshes();
 		world->updatePlanet();
-		
-		FPS = 1.0f / (glfwGetTime() - time);
-		printInfo();
+		Player::GetInstance().physical();
 	}
 	world->stop();
 	return 0;
@@ -118,17 +120,7 @@ int Application::blockChanged(int chunk_x, int chunk_z, int block_x, int block_y
 	return iter->second;
 }
 
-void Application::printInfo()
-{
-	static int tick = 0;
-	if(++ tick > 10000)
-	{
-		std::cout << "<GLCraft> " << "fps: " << GetFps() << "   square count: " << Renderer::GetInstance().getSquareCount() << std::endl;
-		tick = 0;
-	}
-}
-
-float Application::GetFps() { return FPS; }
+float Application::GetFps() { return ImGui::GetIO().Framerate; }
 
 std::string Application::menu()
 {
@@ -323,8 +315,6 @@ bool Application::loadWorld(const std::string &name)
 			Player::PlayerInfo info;
 			info.position = glm::vec3(pos_x, pos_y, pos_z);
 			info.front = glm::vec3(front_x, front_y, front_z);
-			info.height = 0.0f;
-			info.move_speed = 25.0f;
 			Player::GetInstance().init(info);
 			PerlinNoise::Init(seed);
 			// load changed blocks
@@ -387,4 +377,66 @@ void Application::saveGameInfo()
 	} catch (const std::exception& e) {
         std::cerr << "SQLite exception: " << e.what() << std::endl;
     }
+}
+
+void Application::InitImGui()
+{
+	// 1. 创建上下文
+    ImGui::CreateContext();
+    
+    // 2. 设置样式（可选）
+    ImGui::StyleColorsDark();
+    
+    // 3. 初始化平台后端
+    if (!ImGui_ImplGlfw_InitForOpenGL(m_window->getGlfwWindow(), true)) {
+        std::cerr << "Failed to initialize ImGui GLFW backend" << std::endl;
+        return;
+    }
+    
+    // 4. 初始化渲染后端
+    if (!ImGui_ImplOpenGL3_Init("#version 330")) {
+        std::cerr << "Failed to initialize ImGui OpenGL3 backend" << std::endl;
+        return;
+    }
+	
+    ImGuiIO& io = ImGui::GetIO();
+    io.Fonts->AddFontDefault();
+    io.FontGlobalScale = 1.5f; // 全局字体缩放
+}
+
+void Application::renderImGui()
+{
+	ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+    
+    // 构建UI
+    ImGui::Begin("GLCraft Menu");
+	ImGui::Text("Press the \"ctrl\" to release the mouse.");
+    ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+    ImGui::Text("square count: %d", Renderer::GetInstance().getSquareCount());
+    ImGui::Text("current block: %s", Controller::getCurBlock().c_str());
+
+	// 可是太阳啊
+    ImGui::SliderFloat("Sun Angle: ", &World::RunningWorld->sunAngle(), 0.0f, 360.0f);
+	
+	// 移速
+    ImGui::SliderFloat("Move Speed: ", &Player::GetInstance().getInfo().move_speed, 0.001f, 1.0f);
+    
+	// 重力
+    ImGui::SliderFloat("Gravity: ", &Player::GetInstance().getInfo().gravity, 0.001f, 0.01f);
+    
+	// 跳跃
+    ImGui::SliderFloat("jump: ", &Player::GetInstance().getInfo().jump, -0.1f, -1.0f);
+
+	// 物理
+	ImGui::Checkbox("Phsical: ", &Player::GetInstance().getInfo().physical);
+
+	// 多连跳
+	ImGui::Checkbox("Multiple Jump: ", &Player::GetInstance().getInfo().multipleJump);
+    ImGui::End();
+    
+    // 渲染
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

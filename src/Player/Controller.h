@@ -8,9 +8,10 @@ class Controller
 public:
     static void KeyListen(GLFWwindow *window);
     static void MouseMove(double x, double y);
-    static void MousePress(int button);
+    static void MousePress(int button, int action);
     static void WindowResize(int width, int height);
     static void scrollWheel(double xpos, double ypos);
+    static std::string getCurBlock();
 };
 
 #endif

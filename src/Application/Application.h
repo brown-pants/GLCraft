@@ -50,11 +50,12 @@ private:
 	std::string menu();
 	std::string newWorld();
 	std::string chooseWorld(const std::vector<std::string> &worlds);
-	void printInfo();
 	void clearScreen();
 	std::vector<std::string> getNonHiddenFiles(const std::string& directory);
 	bool createWorld(const std::string &name, int seed);
 	bool loadWorld(const std::string &name);
 	void saveGameInfo();
+	void InitImGui();
+	void renderImGui();
 };
 #endif

@@ -19,7 +19,7 @@ public:
 	bool shouldClose() const;
 	void setMouseMoveEvent(const std::function<void(double, double)>& f);
 	void setWindowResizeEvent(const std::function<void(int, int)>& f);
-	void setMousePressEvent(const std::function<void(int)>& f);
+	void setMousePressEvent(const std::function<void(int, int)>& f);
 	void setScrollEvent(const std::function<void(double, double)>& f);
 
 	inline GLFWwindow* getGlfwWindow() const { return m_window; }
@@ -30,7 +30,7 @@ private:
 	{
 		std::function<void(double, double)> mouseMove;
 		std::function<void(int, int)> windowResize;
-		std::function<void(int)> mousePress;
+		std::function<void(int, int)> mousePress;
 		std::function<void(double, double)> scrollWheel;
 	}m_events;
 };

@@ -20,4 +20,8 @@ if(NOT TARGET SQLiteCpp)
     set_target_properties(SQLiteCpp PROPERTIES FOLDER ${ThirdPartyFolder}/SQLiteCpp)
 endif()
 
+if(NOT TARGET imgui)
+    add_subdirectory(imgui)
+    set_target_properties(imgui PROPERTIES FOLDER ${ThirdPartyFolder}/imgui)
+endif()
 

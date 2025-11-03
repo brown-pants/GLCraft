@@ -123,6 +123,36 @@ bool World::touchTest(const glm::vec3& pos)
     return false;
 }
 
+bool World::physicalTest(const glm::vec3 pos)
+{
+    int chunkX = floor(pos.x / CHUNK_X) * CHUNK_X;
+    int chunkZ = floor(pos.z / CHUNK_Z) * CHUNK_Z;
+    Chunk* chunk = getChunk(glm::vec3(chunkX, 0.0f, chunkZ));
+    if (chunk != nullptr)
+    {
+        int blockX = (int)floor(pos.x) % CHUNK_X;
+        int blockZ = (int)floor(pos.z) % CHUNK_Z;
+        float blockY = pos.y;
+        if (blockX < 0)
+        {
+            blockX += CHUNK_X;
+        }
+        if (blockZ < 0)
+        {
+            blockZ += CHUNK_Z;
+        }
+        for (float i = 0.0f; i <= Player::GetInstance().getHeight(); i += 0.1f)
+        {
+            int type = chunk->getBlockType(blockY + i, blockX, blockZ);
+            if (type != -1 && type != Air)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 void World::updatePlanet()
 {
     float a = 1.5f / Application::GetFps();
