@@ -418,22 +418,22 @@ void Application::renderImGui()
     ImGui::Text("current block: %s", Controller::getCurBlock().c_str());
 
 	// 可是太阳啊
-    ImGui::SliderFloat("Sun Angle: ", &World::RunningWorld->sunAngle(), 0.0f, 360.0f);
+    ImGui::SliderFloat(" Sun Angle", &World::RunningWorld->sunAngle(), 0.0f, 360.0f);
 	
 	// 移速
-    ImGui::SliderFloat("Move Speed: ", &Player::GetInstance().getInfo().move_speed, 0.001f, 1.0f);
+    ImGui::SliderFloat(" Move Speed", &Player::GetInstance().getInfo().move_speed, 0.001f, 1.0f);
     
 	// 重力
-    ImGui::SliderFloat("Gravity: ", &Player::GetInstance().getInfo().gravity, 0.001f, 0.01f);
+    ImGui::SliderFloat(" Gravity", &Player::GetInstance().getInfo().gravity, 0.001f, 0.01f);
     
 	// 跳跃
-    ImGui::SliderFloat("jump: ", &Player::GetInstance().getInfo().jump, -0.1f, -1.0f);
+    ImGui::SliderFloat(" jump", &Player::GetInstance().getInfo().jump, -0.1f, -1.0f);
 
 	// 物理
-	ImGui::Checkbox("Phsical: ", &Player::GetInstance().getInfo().physical);
+	ImGui::Checkbox(" Physical", &Player::GetInstance().getInfo().physical);
 
 	// 多连跳
-	ImGui::Checkbox("Multiple Jump: ", &Player::GetInstance().getInfo().multipleJump);
+	ImGui::Checkbox(" Multiple Jump", &Player::GetInstance().getInfo().multipleJump);
     ImGui::End();
     
     // 渲染

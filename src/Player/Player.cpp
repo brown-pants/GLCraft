@@ -172,9 +172,9 @@ void Player::physical()
         playerInfo.position = testPos;
         updateCamera();
     }
-    if (playerInfo.dropSpeed > 0.5)
+    if (playerInfo.dropSpeed >= 1.0f)
     {
-        playerInfo.dropSpeed = 0.5;
+        playerInfo.dropSpeed = 0.9f;
     }
 }
 
