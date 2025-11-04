@@ -137,7 +137,7 @@ void Player::put(Block_Type block_type)
 
 void Player::jump()
 {
-    if (playerInfo.multipleJump || isLanding)
+    if (playerInfo.multipleJump || m_isLanding)
     {
         playerInfo.dropSpeed = playerInfo.jump;
     }
@@ -156,20 +156,20 @@ void Player::physical()
         return;
     }
     glm::vec3 testPos = playerInfo.position;
-    playerInfo.dropSpeed += playerInfo.gravity;
     testPos.y -= playerInfo.dropSpeed;
     if (obstacleTest(testPos))
     {
         if (playerInfo.dropSpeed >= 0.0f)
         {
-            isLanding = true;
+            m_isLanding = true;
         }
-        playerInfo.dropSpeed = 0.0f;
+        playerInfo.dropSpeed = playerInfo.gravity;
     }
     else
     {
-        isLanding = false;
+        m_isLanding = false;
         playerInfo.position = testPos;
+        playerInfo.dropSpeed += playerInfo.gravity;
         updateCamera();
     }
     if (playerInfo.dropSpeed >= 1.0f)
@@ -190,6 +190,20 @@ bool Player::obstacleTest(const glm::vec3 &testPos)
 bool Player::isDive()
 {
     if (camera.position.y > SEA_HORIZON + 1)
+    {
+        return false;
+    }
+    const glm::vec3 &player_pos = playerInfo.position;
+    if (World::RunningWorld->getBlockFromPosition(glm::vec3(player_pos.x, SEA_HORIZON, player_pos.z)) == Water)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool Player::isSwim()
+{
+    if (playerInfo.position.y + playerInfo.height / 2 > SEA_HORIZON + 1)
     {
         return false;
     }

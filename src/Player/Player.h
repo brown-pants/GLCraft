@@ -20,7 +20,7 @@ public:
         float height = 1.8f;
         float move_speed = 0.1f;
         float gravity = 0.004f;
-        float dropSpeed = 0.0f;
+        float dropSpeed = gravity;
         float width = 0.35f;
         float jump = -0.12f;
         bool physical = true;
@@ -34,6 +34,7 @@ public:
     inline glm::vec3 getPosition() const { return playerInfo.position; }
     inline float getHeight() const { return playerInfo.height; }
     inline PlayerInfo &getInfo() { return playerInfo; }
+    inline bool isLanding() const { return m_isLanding; }
 
     void dig();
     void put(Block_Type block_type);
@@ -43,6 +44,7 @@ public:
     void bindPhysical(bool sign) { playerInfo.physical = sign; }
     bool obstacleTest(const glm::vec3 &testPos);
     bool isDive();
+    bool isSwim();
 
 private:
     Player();
@@ -51,6 +53,6 @@ private:
     Camera camera;
     PlayerInfo playerInfo;
 
-    bool isLanding = true;
+    bool m_isLanding = true;
 };
 #endif
