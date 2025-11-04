@@ -83,8 +83,10 @@ int Application::run()
 		Renderer::GetInstance().drawBlocks();
 		Renderer::GetInstance().drawCrosshair();
 		Renderer::GetInstance().drawPlanet();
+		Renderer::GetInstance().drawWater();
 		world->updateRenderMeshes();
 		world->updatePlanet();
+		world->updateFlowWater();
 		Player::GetInstance().physical();
 	}
 	world->stop();

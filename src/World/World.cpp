@@ -31,6 +31,7 @@ void World::updateRenderMeshes()
     if (isUpdateRenderMeshes && lock.try_lock())
     {
         Renderer::GetInstance().updateSquares(vOffsets, matrices);
+        Renderer::GetInstance().updateWater(water_matrices);
         isUpdateRenderMeshes = false;
     }
 }
@@ -114,7 +115,7 @@ bool World::touchTest(const glm::vec3& pos)
             blockZ += CHUNK_Z;
         }
         int type = chunk->getBlockType(blockY, blockX, blockZ);
-        if (type != -1 && type != Air)
+        if (type != -1 && type != Air && type != Water)
         {
             return true;
             
@@ -144,7 +145,7 @@ bool World::physicalTest(const glm::vec3 pos)
         for (float i = 0.0f; i <= Player::GetInstance().getHeight(); i += 0.1f)
         {
             int type = chunk->getBlockType(blockY + i, blockX, blockZ);
-            if (type != -1 && type != Air)
+            if (type != -1 && type != Air && type != Water)
             {
                 return true;
             }
@@ -174,12 +175,15 @@ void World::updateMeshes()
 { 
     vOffsets.clear();
     matrices.clear();
+    water_matrices.clear();
     for(auto chunk : chunks)
     {
         std::vector<float> &chunk_vOffsets = chunk->getVOffsets();
         std::vector<glm::mat4>& chunk_matrices = chunk->getMatrices();
+        std::vector<glm::mat4>& chunk_water_matrices = chunk->getWaterMatrices();
         vOffsets.insert(vOffsets.end(), chunk_vOffsets.begin(), chunk_vOffsets.end());
         matrices.insert(matrices.end(), chunk_matrices.begin(), chunk_matrices.end());
+        water_matrices.insert(water_matrices.end(), chunk_water_matrices.begin(), chunk_water_matrices.end());
     }
     isUpdateRenderMeshes = true;
 }
@@ -309,4 +313,77 @@ Chunk *World::getChunk(const glm::vec3 &position)
         }
     }
     return nullptr;
+}
+
+void World::updateFlowWater()
+{
+    for (auto iter = m_flowingWaters.begin(); iter != m_flowingWaters.end(); )
+    {
+        std::queue<glm::vec3> &que = *iter;
+        glm::vec3 waterPos = que.front();
+        que.pop();
+        glm::vec3 left = glm::vec3(waterPos.x - 1, waterPos.y, waterPos.z);
+        glm::vec3 right = glm::vec3(waterPos.x + 1, waterPos.y, waterPos.z);
+        glm::vec3 front = glm::vec3(waterPos.x, waterPos.y, waterPos.z + 1);
+        glm::vec3 back = glm::vec3(waterPos.x, waterPos.y, waterPos.z - 1);
+        if (setWater(left))
+        {
+            que.push(left);
+        }
+        if (setWater(right))
+        {
+            que.push(right);
+        }
+        if (setWater(front))
+        {
+            que.push(front);
+        }
+        if (setWater(back))
+        {
+            que.push(back);
+        }
+        if (que.empty())
+        {
+            iter = m_flowingWaters.erase(iter);
+        }
+        else
+        {
+            iter ++;
+        }
+    }
+}
+
+void World::addFlowWater(const glm::vec3 &global_pos)
+{
+    std::queue<glm::vec3> queue;
+    queue.push(global_pos);
+    m_flowingWaters.push_back(queue);
+}
+
+bool World::setWater(const glm::vec3 &pos)
+{
+    int chunkX = floor(pos.x / CHUNK_X) * CHUNK_X;
+    int chunkZ = floor(pos.z / CHUNK_Z) * CHUNK_Z;
+    Chunk* chunk = getChunk(glm::vec3(chunkX, 0.0f, chunkZ));
+    if (chunk != nullptr)
+    {
+        int blockX = (int)floor(pos.x) % CHUNK_X;
+        int blockZ = (int)floor(pos.z) % CHUNK_Z;
+        int blockY = (int)pos.y;
+        if (blockX < 0)
+        {
+            blockX += CHUNK_X;
+        }
+        if (blockZ < 0)
+        {
+            blockZ += CHUNK_Z;
+        }
+        if (chunk->getBlockType(blockY, blockX, blockZ) == Air)
+        {
+            chunk->setBlock(blockY, blockX, blockZ, Water);
+            updateMeshes();
+            return true;
+        }
+    }
+    return false;
 }

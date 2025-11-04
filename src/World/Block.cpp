@@ -17,6 +17,7 @@ Block::Block(Block_Type type) : block_type(type)
         Transparency[LogBlock] = false;
         Transparency[LeaveBlock] = true;
         Transparency[CactusBlock] = true;
+        Transparency[Water] = true;
 
         Texs[ClayBlock].left = TextureManager::ClayBlock;
         Texs[ClayBlock].right = TextureManager::ClayBlock;

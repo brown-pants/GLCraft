@@ -41,6 +41,8 @@ public:
 
     void stop();
 
+    void updateFlowWater();
+    void addFlowWater(const glm::vec3 &global_pos);
 
 private:
     void updateMeshes();
@@ -51,6 +53,7 @@ private:
 
     std::vector<float> vOffsets;
     std::vector<glm::mat4> matrices;
+    std::vector<glm::mat4> water_matrices;
     
     std::thread* th_loadWorld;
     std::mutex mtx;
@@ -59,6 +62,8 @@ private:
     bool isUpdateRenderMeshes;
 
     float sunRotateAngle;
+    std::vector<std::queue<glm::vec3>> m_flowingWaters;
+    bool setWater(const glm::vec3 &pos);
 };
 
 #endif

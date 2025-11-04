@@ -85,6 +85,12 @@ void TextureManager::LoadTextures()
     tex_loading.create();
     tex_loading.setData((GLubyte*)loadingTex.data, loadingTex.width, loadingTex.height, GL_TRUE);
     stbi_image_free(loadingTex.data);
+
+    //loading water map
+    TexData waterTex = load_texture2d("./resources/textures/water_still.png");
+    water_map.create();
+    water_map.setData((GLubyte*)waterTex.data, waterTex.width, waterTex.height, GL_TRUE);
+    stbi_image_free(waterTex.data);
 }
 
 TextureManager::TexData TextureManager::load_texture2d(const std::string &filename) const

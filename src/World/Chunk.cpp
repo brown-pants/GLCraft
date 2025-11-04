@@ -60,11 +60,7 @@ Chunk::Chunk(glm::vec3 position, Chunk* leftChunk, Chunk* rightChunk, Chunk* fro
 
                 if (y > max_y)
                 {
-                    int type = Application::GetApp()->blockChanged(position.x, position.z, x, y, z);
-                    if (type != -1)
-                    {
-                        blocks[y][x][z] = (Block_Type)type;
-                    }
+                    loadBlock(x, y, z, Air);
                 }
                 else if (y < 60)
                 {
@@ -77,7 +73,7 @@ Chunk::Chunk(glm::vec3 position, Chunk* leftChunk, Chunk* rightChunk, Chunk* fro
                     if (y == max_y)
                     {
                         float noise = PerlinNoise::Noise_2d(90, 1, position.x + x, position.z + z);
-                        if (noise > 0.8f)
+                        if (noise > 0.8f && y > SEA_HORIZON)
                         {
                             int height = abs((int)(noise * 100)) % 3 + 3;
                             generateCactus(y, x, z, height);
@@ -88,9 +84,9 @@ Chunk::Chunk(glm::vec3 position, Chunk* leftChunk, Chunk* rightChunk, Chunk* fro
                 {
                     if (y == max_y)
                     {
-                        loadBlock(x, y, z, GrassBlock);
+                        loadBlock(x, y, z, y >= SEA_HORIZON ? GrassBlock : ClayBlock);
                         //generate tree
-                        if (tree_noise < 0.3 && x == tree_x && z == tree_z)
+                        if (tree_noise < 0.3 && x == tree_x && z == tree_z && y > SEA_HORIZON)
                         {
                             int height = abs((int)(tree_noise * 100)) % 5 + 4;
                             generateTree(y, x, z, height);
@@ -159,6 +155,7 @@ void Chunk::updateMesh()
 {
     vOffsets.clear();
     matrices.clear();
+    water_matrices.clear();
     for (int y = 0; y < CHUNK_Y; y++)
     {
         for (int x = 0; x < CHUNK_X; x++)
@@ -252,7 +249,13 @@ void Chunk::updateMesh()
                     backBlockTrans = blocks[y][x][z - 1].isTransparent();
                 }
 
-                //update
+                //update water
+                if (block.type() == Water)
+                {
+                    water_matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y + 0.3f, z)) * Translate_global * Rotate_top);
+                    continue;
+                }
+                //update blocks
                 if (leftBlockTrans || block.type() == CactusBlock)
                 {
                     vOffsets.push_back(block.getLeftTexture());
@@ -294,13 +297,27 @@ int Chunk::getBlockType(int y, int x, int z)
     return blocks[y][x][z].type();
 }
 
+void Chunk::setBlock(int y, int x, int z, Block_Type type)
+{
+    blocks[y][x][z] = type;
+    updateMesh();
+}
+
 bool Chunk::dig(int y, int x, int z)
 {
     if (y < 0 || y >= CHUNK_Y || x < 0 || x >= CHUNK_X || z < 0 || z >= CHUNK_Z) return false;
 
-    if (blocks[y][x][z].type() != Air)
+    if (blocks[y][x][z].type() != Air && blocks[y][x][z].type() != Water)
     {
-        blocks[y][x][z] = Air;
+        if (y == SEA_HORIZON && aroundWater(x, y, z))
+        {
+            blocks[y][x][z] = Water;
+            World::RunningWorld->addFlowWater(position + glm::vec3(x, y, z));
+        }
+        else
+        {
+            blocks[y][x][z] = Air;
+        }
         Application::GetApp()->changeBlock(position.x, position.z, x, y, z, Air);
         updateMesh();
         if (this->leftChunk != nullptr)
@@ -340,7 +357,7 @@ bool Chunk::put(int y, int x, int z, Block_Type type)
         }
     }
 
-    if (blocks[y][x][z].type() == Air)
+    if (blocks[y][x][z].type() == Air || blocks[y][x][z].type() == Water)
     {
         blocks[y][x][z] = type;
         Application::GetApp()->changeBlock(position.x, position.z, x, y, z, type);
@@ -416,8 +433,56 @@ void Chunk::loadBlock(int x, int y, int z, Block_Type block_type)
     {
         blocks[y][x][z] = (Block_Type)type;
     }
-    else
+    else if (blocks[y][x][z].type() == Air)
     {
         blocks[y][x][z] = block_type;
     }
+    if (y == SEA_HORIZON && blocks[y][x][z].type() == Air)
+    {
+        blocks[y][x][z] = Water;
+    }
+}
+
+bool Chunk::aroundWater(int x, int y, int z)
+{
+    //X
+    if (x == 0)
+    {
+        if (blocks[y][x + 1][z].type() == Water || leftChunk != nullptr && leftChunk->blocks[y][CHUNK_X - 1][z].type() == Water)
+        {
+            return true;
+        }
+    }
+    else if (x == CHUNK_X - 1)
+    {
+        if (blocks[y][x - 1][z].type() == Water || rightChunk != nullptr && rightChunk->blocks[y][0][z].type() == Water)
+        {
+            return true;
+        }
+    }
+    else if (blocks[y][x + 1][z].type() == Water || blocks[y][x - 1][z].type() == Water)
+    {
+        return true;
+    }
+    //Z
+    if (z == 0)
+    {
+        if (blocks[y][x][z + 1].type() == Water || backChunk != nullptr && backChunk->blocks[y][x][CHUNK_Z - 1].type() == Water)
+        {
+            return true;
+        }
+    }
+    else if (z == CHUNK_Z - 1)
+    {
+        if (blocks[y][x][z - 1].type() == Water || frontChunk != nullptr && frontChunk->blocks[y][x][0].type() == Water)
+        {
+            return true;
+        }
+    }
+    else if (blocks[y][x][z + 1].type() == Water || blocks[y][x][z - 1].type() == Water)
+    {
+        return true;
+    }
+
+    return false;
 }

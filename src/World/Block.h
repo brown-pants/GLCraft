@@ -1,12 +1,13 @@
 #ifndef __BLOCK_H__
 #define __BLOCK_H__
-#define BLOCK_TYPE_NUM 9
+#define BLOCK_TYPE_NUM 10
 #include <array>
 #include "../Resource/TextureManager.h"
 
 enum Block_Type
 {
     Air = 0,
+    Water,
     ClayBlock,
     GrassBlock,
     StoneBlock,

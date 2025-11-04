@@ -146,11 +146,11 @@ void Controller::scrollWheel(double xpos, double ypos)
     {
         curBlock -= 1;
     }
-    if (curBlock == 9)
+    if (curBlock >= BLOCK_TYPE_NUM)
     {
-        curBlock = 1;
+        curBlock = 2;
     }
-    else if (curBlock == 0)
+    else if (curBlock <= 1)
     {
         curBlock = 8;
     }
@@ -161,6 +161,7 @@ std::string Controller::getCurBlock()
     static std::string blockNames[] = 
     {
         "Air",
+        "Water",
         "ClayBlock",
         "GrassBlock",
         "StoneBlock",

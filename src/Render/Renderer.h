@@ -12,8 +12,10 @@ public:
     void drawBlocks();
     void drawCrosshair();
     void drawPlanet();
-    void updateSquares(const std::vector<float> &vOffsets, const std::vector<glm::mat4> &matrices);
+    void drawWater();
     void drawLoadingBackground();
+    void updateSquares(const std::vector<float> &vOffsets, const std::vector<glm::mat4> &matrices);
+    void updateWater(const std::vector<glm::mat4> &matrices);
 
     uint32_t getSquareCount() const { return squareCount; }
 
@@ -22,8 +24,10 @@ private:
 
     Mesh loadingMesh;
     Mesh squareMesh;
-    Mesh crosshairMesh;
     Mesh planetMesh;
+    Mesh crosshairMesh;
+    Mesh waterMesh;
     uint32_t squareCount;
+    uint32_t waterCount;
 };
 #endif
