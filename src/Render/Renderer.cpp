@@ -172,6 +172,18 @@ void Renderer::drawBlocks()
     squareShader.setVec3("sunPos", World::RunningWorld->getSunPosition());
     squareShader.setVec3("moonPos", World::RunningWorld->getMoonPosition());
     squareShader.setVec3("skyColor", World::RunningWorld->getSkyColor());
+    if (Player::GetInstance().isDive())
+    {
+        squareShader.setVec3("diveColor", glm::vec3(0.3, 0.5, 0.7));
+        squareShader.setFloat("density", 0.01);
+        squareShader.setFloat("gradient", 8.5);
+    }
+    else
+    {
+        squareShader.setVec3("diveColor", glm::vec3(1.0f));
+        squareShader.setFloat("density", 0.005);
+        squareShader.setFloat("gradient", 9.5);
+    }
 
     //render...
     squareShader.bind();
@@ -187,6 +199,7 @@ void Renderer::drawBlocks()
 
 void Renderer::drawWater()
 {
+    glDisable(GL_CULL_FACE);
     static float waterMapOffset = 0.0f;
     GLShader &waterShader = ShaderManager::GetInstance().getShader(ShaderManager::Water);
     GLTexture2D &waterMap = TextureManager::GetInstance().getWaterMap();
@@ -216,6 +229,7 @@ void Renderer::drawWater()
     waterMesh.vao.unbind();
     waterMap.unbind();
     waterShader.unbind();
+    glEnable(GL_CULL_FACE);
 }
 
 void Renderer::drawCrosshair()

@@ -9,13 +9,13 @@ out vec2 uv;
 uniform mat4 view;
 uniform mat4 projection;
 uniform int tex2d_count;
+uniform float density;
+uniform float gradient;
 
 out vec3 normal;
 out vec3 fragPos;
 
 out float visibility;
-const float density = 0.005;
-const float gradient = 9.5;
 
 void main()
 {

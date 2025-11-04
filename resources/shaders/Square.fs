@@ -13,6 +13,7 @@ in vec3 fragPos;
 in float visibility;
 
 uniform vec3 skyColor;
+uniform vec3 diveColor;
 
 void main()
 {
@@ -38,6 +39,6 @@ void main()
         moonDiff = max(dot(norm, moonLightDir), 0.0);
     }
 
-    vec4 color = vec4((ambientStrength + sunDiff * 0.8 + moonDiff * 0.2) * squareColor, 1.0f);
+    vec4 color = vec4((ambientStrength + sunDiff * 0.8 + moonDiff * 0.2) * squareColor * diveColor, 1.0f);
     FragColor = mix(vec4(skyColor, 1.0f), color, visibility);
 }

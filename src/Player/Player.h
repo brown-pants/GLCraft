@@ -42,6 +42,7 @@ public:
     bool isBindPhysical() const { return playerInfo.physical; }
     void bindPhysical(bool sign) { playerInfo.physical = sign; }
     bool obstacleTest(const glm::vec3 &testPos);
+    bool isDive();
 
 private:
     Player();

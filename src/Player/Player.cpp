@@ -186,3 +186,17 @@ bool Player::obstacleTest(const glm::vec3 &testPos)
     World::RunningWorld->physicalTest(testPos + glm::vec3(-playerInfo.width, 0, playerInfo.width)) ||
     World::RunningWorld->physicalTest(testPos + glm::vec3(-playerInfo.width, 0, -playerInfo.width));
 }
+
+bool Player::isDive()
+{
+    if (camera.position.y > SEA_HORIZON + 1)
+    {
+        return false;
+    }
+    const glm::vec3 &player_pos = playerInfo.position;
+    if (World::RunningWorld->getBlockFromPosition(glm::vec3(player_pos.x, SEA_HORIZON, player_pos.z)) == Water)
+    {
+        return true;
+    }
+    return false;
+}

@@ -44,6 +44,8 @@ public:
     void updateFlowWater();
     void addFlowWater(const glm::vec3 &global_pos);
 
+    int getBlockFromPosition(const glm::vec3 &pos);
+
 private:
     void updateMeshes();
     void update();

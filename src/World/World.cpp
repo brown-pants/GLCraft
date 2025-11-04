@@ -387,3 +387,26 @@ bool World::setWater(const glm::vec3 &pos)
     }
     return false;
 }
+
+int World::getBlockFromPosition(const glm::vec3 &pos)
+{
+    int chunkX = floor(pos.x / CHUNK_X) * CHUNK_X;
+    int chunkZ = floor(pos.z / CHUNK_Z) * CHUNK_Z;
+    Chunk* chunk = getChunk(glm::vec3(chunkX, 0.0f, chunkZ));
+    if (chunk != nullptr)
+    {
+        int blockX = (int)floor(pos.x) % CHUNK_X;
+        int blockZ = (int)floor(pos.z) % CHUNK_Z;
+        int blockY = (int)pos.y;
+        if (blockX < 0)
+        {
+            blockX += CHUNK_X;
+        }
+        if (blockZ < 0)
+        {
+            blockZ += CHUNK_Z;
+        }
+        return chunk->getBlockType(blockY, blockX, blockZ);
+    }
+    return -1;
+}
