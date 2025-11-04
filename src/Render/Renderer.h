@@ -16,6 +16,7 @@ public:
     void drawLoadingBackground();
     void updateSquares(const std::vector<float> &vOffsets, const std::vector<glm::mat4> &matrices);
     void updateWater(const std::vector<glm::mat4> &matrices);
+    void clearMeshes();
 
     uint32_t getSquareCount() const { return squareCount; }
 

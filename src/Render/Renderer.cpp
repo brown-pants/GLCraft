@@ -300,3 +300,12 @@ void Renderer::updateWater(const std::vector<glm::mat4> &matrices)
     waterMesh.instance_vbos[0].setData(matrices.size() * sizeof(glm::mat4), &matrices[0][0]);
     waterCount = matrices.size();
 }
+
+void Renderer::clearMeshes()
+{
+    loadingMesh.clear();
+    squareMesh.clear();
+    planetMesh.clear();
+    crosshairMesh.clear();
+    waterMesh.clear();
+}

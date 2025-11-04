@@ -60,6 +60,7 @@ Application::~Application()
 		delete curDB;
 	}
 	delete world;
+	Renderer::GetInstance().clearMeshes();
 	delete m_window;
 }
 

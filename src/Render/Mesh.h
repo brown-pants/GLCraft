@@ -6,7 +6,7 @@
 
 struct Mesh
 {
-    ~Mesh()
+    void clear()
     {
         vao.deleteObj();
         vbo.deleteObj();
