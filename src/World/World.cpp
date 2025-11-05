@@ -150,8 +150,9 @@ bool World::physicalTest(const glm::vec3 pos)
                 return true;
             }
         }
+        return false;
     }
-    return false;
+    return true;
 }
 
 void World::updatePlanet()

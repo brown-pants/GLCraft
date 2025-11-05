@@ -413,12 +413,15 @@ void Application::renderImGui()
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
     
+	const glm::vec3 &playerPos = Player::GetInstance().getInfo().position;
+	
     // 构建UI
     ImGui::Begin("GLCraft Menu");
 	ImGui::Text("Press the \"ctrl\" to release the mouse.");
     ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
     ImGui::Text("square count: %d", Renderer::GetInstance().getSquareCount());
     ImGui::Text("current block: %s", Controller::getCurBlock().c_str());
+    ImGui::Text("player position: (%.1f, %.1f, %.1f)", playerPos.x, playerPos.y, playerPos.z);
 
 	// 可是太阳啊
     ImGui::SliderFloat(" Sun Angle", &World::RunningWorld->sunAngle(), 0.0f, 360.0f);

@@ -155,8 +155,16 @@ void Player::physical()
     {
         return;
     }
+
+    float dropSpeed = playerInfo.dropSpeed * 100 / Application::GetFps();
+    if (dropSpeed >= 1.0f)
+    {
+        dropSpeed = 0.9f;
+    }
+
     glm::vec3 testPos = playerInfo.position;
-    testPos.y -= playerInfo.dropSpeed;
+    testPos.y -= dropSpeed;
+    
     if (obstacleTest(testPos))
     {
         if (playerInfo.dropSpeed >= 0.0f)
@@ -172,9 +180,10 @@ void Player::physical()
         playerInfo.dropSpeed += playerInfo.gravity;
         updateCamera();
     }
-    if (playerInfo.dropSpeed >= 1.0f)
+
+    if (playerInfo.dropSpeed >= 10000.0f)
     {
-        playerInfo.dropSpeed = 0.9f;
+        playerInfo.dropSpeed = 10000.0f;
     }
 }
 
@@ -193,10 +202,17 @@ bool Player::isDive()
     {
         return false;
     }
-    const glm::vec3 &player_pos = playerInfo.position;
-    if (World::RunningWorld->getBlockFromPosition(glm::vec3(player_pos.x, SEA_HORIZON, player_pos.z)) == Water)
+    for (int y = playerInfo.position.y; y <= SEA_HORIZON; y ++)
     {
-        return true;
+        int type = World::RunningWorld->getBlockFromPosition(glm::vec3(playerInfo.position.x, y, playerInfo.position.z));
+        if (type == Water)
+        {
+            return true;
+        }
+        else if (type != Air)
+        {
+            return false;
+        }
     }
     return false;
 }
@@ -207,10 +223,18 @@ bool Player::isSwim()
     {
         return false;
     }
-    const glm::vec3 &player_pos = playerInfo.position;
-    if (World::RunningWorld->getBlockFromPosition(glm::vec3(player_pos.x, SEA_HORIZON, player_pos.z)) == Water)
+    
+    for (int y = playerInfo.position.y; y <= SEA_HORIZON; y ++)
     {
-        return true;
+        int type = World::RunningWorld->getBlockFromPosition(glm::vec3(playerInfo.position.x, y, playerInfo.position.z));
+        if (type == Water)
+        {
+            return true;
+        }
+        else if (type != Air)
+        {
+            return false;
+        }
     }
     return false;
 }

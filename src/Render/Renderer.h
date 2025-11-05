@@ -18,7 +18,7 @@ public:
     void updateWater(const std::vector<glm::mat4> &matrices);
     void clearMeshes();
 
-    uint32_t getSquareCount() const { return squareCount; }
+    uint32_t getSquareCount() const { return squareCount + waterCount; }
 
 private:
     Renderer();
