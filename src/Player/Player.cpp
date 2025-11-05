@@ -137,10 +137,7 @@ void Player::put(Block_Type block_type)
 
 void Player::jump()
 {
-    if (playerInfo.multipleJump || m_isLanding)
-    {
-        playerInfo.dropSpeed = playerInfo.jump;
-    }
+    playerInfo.dropSpeed = playerInfo.jump;
 }
 
 void Player::updateCamera()

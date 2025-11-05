@@ -38,23 +38,32 @@ void Controller::KeyListen(GLFWwindow *window)
         }
     }
 
-    if (Player::GetInstance().isSwim() && (!Player::GetInstance().isLanding() || Player::GetInstance().isDive()))
+    static bool jumping = false;
+    if (Player::GetInstance().isLanding())
+    {
+        jumping = false;
+    }
+    if (Player::GetInstance().isSwim() && !jumping && (!Player::GetInstance().isLanding() || Player::GetInstance().isDive()))
     {
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
         {
-            Player::GetInstance().getInfo().dropSpeed = -0.03f;
+            Player::GetInstance().getInfo().dropSpeed = -0.05f;
         }
         else
         {
-            Player::GetInstance().getInfo().dropSpeed = 0.03f;
+            Player::GetInstance().getInfo().dropSpeed = 0.05f;
         }
     }
-    else
+    else if (Player::GetInstance().isLanding() || Player::GetInstance().getInfo().multipleJump)
     {
         static bool spaceRelease = true;
         if (spaceRelease && glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) 
         {
             Player::GetInstance().jump();
+            if (!Player::GetInstance().getInfo().multipleJump)
+            {
+                jumping = true;
+            }
             spaceRelease = false;
         }
         else if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE) 
