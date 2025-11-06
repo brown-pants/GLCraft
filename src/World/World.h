@@ -13,9 +13,7 @@ public:
     World();
     ~World();
 
-    void init(const glm::vec3& playerPos, float sunAngle);
-
-    float &sunAngle() { return sunRotateAngle; }
+    void init(const glm::vec3& playerPos, float sunAngle, const std::vector<std::queue<glm::vec3>> &flowingWater);
 
     void loadChunk(const glm::vec3 &position);
     Chunk *getChunk(const glm::vec3 &position);
@@ -31,11 +29,14 @@ public:
 
     void updatePlanet();
 
-    glm::mat4 getSunModelMatrix() const { return glm::rotate(glm::mat4(1.0f), glm::radians(sunRotateAngle), glm::vec3(1.0f, 0.0f, 0.0f)); }
-    glm::mat4 getMoonModelMatrix() const { return glm::rotate(glm::mat4(1.0f), glm::radians(sunRotateAngle + 180.0f), glm::vec3(1.0f, 0.0f, 0.0f)); }
+    inline glm::mat4 getSunModelMatrix() const { return glm::rotate(glm::mat4(1.0f), glm::radians(sunRotateAngle), glm::vec3(1.0f, 0.0f, 0.0f)); }
+    inline glm::mat4 getMoonModelMatrix() const { return glm::rotate(glm::mat4(1.0f), glm::radians(sunRotateAngle + 180.0f), glm::vec3(1.0f, 0.0f, 0.0f)); }
 
-    glm::vec3 getSunPosition() const { return glm::vec3(getSunModelMatrix() * glm::vec4(0.0f, 0.0f, -100.0f, 1.0f)); }
-    glm::vec3 getMoonPosition() const { return glm::vec3(getMoonModelMatrix() * glm::vec4(0.0f, 0.0f, -100.0f, 1.0f)); }
+    inline glm::vec3 getSunPosition() const { return glm::vec3(getSunModelMatrix() * glm::vec4(0.0f, 0.0f, -100.0f, 1.0f)); }
+    inline glm::vec3 getMoonPosition() const { return glm::vec3(getMoonModelMatrix() * glm::vec4(0.0f, 0.0f, -100.0f, 1.0f)); }
+
+    inline float &sunAngle() { return sunRotateAngle; }
+    inline const std::vector<std::queue<glm::vec3>> &getFlowingWater() const { return m_flowingWater; }
 
     glm::vec3 getSkyColor() const;
 
@@ -49,6 +50,7 @@ public:
 private:
     void updateMeshes();
     void update();
+    bool setWater(const glm::vec3 &pos);
 
     std::list<Chunk *> chunks;
     std::list<Chunk *> edgeChunks;
@@ -64,8 +66,7 @@ private:
     bool isUpdateRenderMeshes;
 
     float sunRotateAngle;
-    std::vector<std::queue<glm::vec3>> m_flowingWaters;
-    bool setWater(const glm::vec3 &pos);
+    std::vector<std::queue<glm::vec3>> m_flowingWater;
 };
 
 #endif

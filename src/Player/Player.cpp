@@ -199,6 +199,7 @@ bool Player::isDive()
     {
         return false;
     }
+    
     for (int y = info.position.y; y <= SEA_HORIZON; y ++)
     {
         int type = World::RunningWorld->getBlockFromPosition(glm::vec3(info.position.x, y, info.position.z));

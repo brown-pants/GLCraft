@@ -179,11 +179,12 @@ World::World()
     RunningWorld = this;
 }
 
-void World::init(const glm::vec3& playerPos, float sunAngle)
+void World::init(const glm::vec3& playerPos, float sunAngle, const std::vector<std::queue<glm::vec3>> &flowingWater)
 {
     float x = floor(playerPos.x / CHUNK_X) * CHUNK_X;
     float z = floor(playerPos.z / CHUNK_Z) * CHUNK_Z;
     sunRotateAngle = sunAngle;
+    m_flowingWater = flowingWater;
     loadChunk(glm::vec3(x, 0, z));
     update();
     th_loadWorld = new std::thread([this]() {
@@ -302,7 +303,7 @@ Chunk *World::getChunk(const glm::vec3 &position)
 
 void World::updateFlowWater()
 {
-    for (auto iter = m_flowingWaters.begin(); iter != m_flowingWaters.end(); )
+    for (auto iter = m_flowingWater.begin(); iter != m_flowingWater.end(); )
     {
         std::queue<glm::vec3> &que = *iter;
         glm::vec3 waterPos = que.front();
@@ -329,7 +330,7 @@ void World::updateFlowWater()
         }
         if (que.empty())
         {
-            iter = m_flowingWaters.erase(iter);
+            iter = m_flowingWater.erase(iter);
         }
         else
         {
@@ -342,7 +343,7 @@ void World::addFlowWater(const glm::vec3 &global_pos)
 {
     std::queue<glm::vec3> queue;
     queue.push(global_pos);
-    m_flowingWaters.push_back(queue);
+    m_flowingWater.push_back(queue);
 }
 
 bool World::setWater(const glm::vec3 &pos)

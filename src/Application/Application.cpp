@@ -278,6 +278,12 @@ bool Application::createWorld(const std::string &name, int seed)
 				"block_type INTEGER, "
 				"PRIMARY KEY (chunk_x, chunk_z, block_x, block_y, block_z))");
 
+		db.exec("CREATE TABLE IF NOT EXISTS flowing_water ("
+				"x INTEGER, "
+				"y INTEGER, "
+				"z INTEGER, "
+				"sign INTEGER)");
+
 		SQLite::Statement insert(db,
             "INSERT INTO info (seed, sunAngle, position_x, position_y, position_z, "
             "front_x, front_y, front_z) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
@@ -315,13 +321,16 @@ bool Application::loadWorld(const std::string &name)
             double front_x = query.getColumn(5);
             double front_y = query.getColumn(6);
             double front_z = query.getColumn(7);
+
+			// load game info
 			Player::PlayerInfo info;
 			info.position = glm::vec3(pos_x, pos_y, pos_z);
 			info.front = glm::vec3(front_x, front_y, front_z);
 			Player::GetInstance().init(info);
 			PerlinNoise::Init(seed);
+
 			// load changed blocks
-			SQLite::Statement query(*curDB, "SELECT chunk_x, chunk_z, block_x, block_y, block_z, block_type FROM change");
+			query = SQLite::Statement(*curDB, "SELECT chunk_x, chunk_z, block_x, block_y, block_z, block_type FROM change");
 			while (query.executeStep())
 			{
 				BlockPosition blockPos;
@@ -333,7 +342,31 @@ bool Application::loadWorld(const std::string &name)
 				int block_type = query.getColumn(5);
 				m_changedBlocks.insert(std::pair<BlockPosition, Block_Type>(blockPos, (Block_Type)block_type));
 			}
-			world->init(Player::GetInstance().getInfo().position, sunAngle);
+
+			// load flowing water
+			query = SQLite::Statement(*curDB, "SELECT x, y, z, sign FROM flowing_water");
+			std::vector<std::queue<glm::vec3>> flowingWater;
+			while (query.executeStep())
+			{
+				int x = query.getColumn(0);
+				int y = query.getColumn(1);
+				int z = query.getColumn(2);
+				int sign = query.getColumn(3);
+				glm::vec3 pos(x, y, z);
+				if (sign)
+				{
+					std::queue<glm::vec3> que;
+					que.push(pos);
+					flowingWater.push_back(que);
+				}
+				else
+				{
+					flowingWater.back().push(pos);
+				}
+			}
+
+			// init world
+			world->init(Player::GetInstance().getInfo().position, sunAngle, flowingWater);
 		}
 		else
 		{
@@ -366,6 +399,7 @@ std::size_t Application::BlockPosition::Hash::operator()(const BlockPosition& po
 void Application::saveGameInfo()
 {
 	try {
+		// save game info
 		SQLite::Statement update(*curDB,
             "UPDATE info SET sunAngle = ?, position_x = ?, position_y = ?, position_z = ?, "
     		"front_x = ?, front_y = ?, front_z = ?");
@@ -377,6 +411,29 @@ void Application::saveGameInfo()
         update.bind(6, Player::GetInstance().getInfo().front.y);
         update.bind(7, Player::GetInstance().getInfo().front.z);
         update.exec();
+
+		// clear flowing water
+		SQLite::Statement clear(*curDB, "DELETE FROM flowing_water");
+		clear.exec();
+
+		// save flowing water
+		auto flowingWater = World::RunningWorld->getFlowingWater();
+		for (auto que : flowingWater)
+		{
+			bool sign = true;
+			while (!que.empty())
+			{
+				const glm::vec3 &pos = que.front();
+				que.pop();
+				SQLite::Statement insert(*curDB, "INSERT INTO flowing_water(x, y, z, sign) VALUES(?, ?, ?, ?)");
+				insert.bind(1, pos.x);
+				insert.bind(2, pos.y);
+				insert.bind(3, pos.z);
+				insert.bind(4, sign);
+				insert.exec();
+				sign = false;
+			}
+		}
 	} catch (const std::exception& e) {
         std::cerr << "SQLite exception: " << e.what() << std::endl;
     }
