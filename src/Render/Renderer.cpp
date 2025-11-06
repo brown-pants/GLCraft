@@ -234,6 +234,7 @@ void Renderer::drawWater()
 
 void Renderer::drawCrosshair()
 {
+    glDisable(GL_DEPTH_TEST);
     GLShader& squareShader = ShaderManager::GetInstance().getShader(ShaderManager::Crosshair);
     Camera& camera = Player::GetInstance().getCamera();
 
@@ -244,6 +245,7 @@ void Renderer::drawCrosshair()
     glDrawArrays(GL_LINES, 0, 4);
     crosshairMesh.vao.unbind();
     squareShader.unbind();
+    glEnable(GL_DEPTH_TEST);
 }
 
 void Renderer::drawPlanet()

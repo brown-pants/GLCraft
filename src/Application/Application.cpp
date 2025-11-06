@@ -82,9 +82,9 @@ int Application::run()
 		Controller::KeyListen(m_window->getGlfwWindow());
 		glEnable(GL_CULL_FACE);
 		Renderer::GetInstance().drawBlocks();
-		Renderer::GetInstance().drawCrosshair();
 		Renderer::GetInstance().drawPlanet();
 		Renderer::GetInstance().drawWater();
+		Renderer::GetInstance().drawCrosshair();
 		world->updateRenderMeshes();
 		world->updatePlanet();
 		world->updateFlowWater();

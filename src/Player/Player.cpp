@@ -153,7 +153,7 @@ void Player::physical()
         return;
     }
 
-    float dropSpeed = playerInfo.dropSpeed * 100 / Application::GetFps();
+    float dropSpeed = playerInfo.dropSpeed * 120 / Application::GetFps();
     if (dropSpeed >= 1.0f)
     {
         dropSpeed = 0.9f;
