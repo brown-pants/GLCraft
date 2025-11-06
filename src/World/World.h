@@ -23,9 +23,9 @@ public:
     void updateRenderMeshes();
 
     bool digTest(const glm::vec3& pos);
-    bool putTest(const glm::vec3& pos, const glm::vec3& dir, Block_Type block_type);
     bool touchTest(const glm::vec3& pos);
-    bool physicalTest(const glm::vec3 pos);
+    bool putTest(const glm::vec3& pos, const glm::vec3& dir, Block_Type block_type);
+    bool physicalTest(const glm::vec3 pos, float height);
 
     static World* RunningWorld;
 
@@ -53,8 +53,8 @@ private:
     std::list<Chunk *> chunks;
     std::list<Chunk *> edgeChunks;
 
-    std::vector<float> vOffsets;
-    std::vector<glm::mat4> matrices;
+    std::vector<float> block_vOffsets;
+    std::vector<glm::mat4> block_matrices;
     std::vector<glm::mat4> water_matrices;
     
     std::thread* th_loadWorld;

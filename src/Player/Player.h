@@ -25,23 +25,19 @@ public:
         float jump = -0.12f;
         bool physical = true;
         bool multipleJump = false;
+        bool landing = true;
     };
     static Player &GetInstance();
     void init(const PlayerInfo &info);
     void move(int dir);
     void setFront(const glm::vec3 &front);
     inline Camera &getCamera() { return camera; }
-    inline glm::vec3 getPosition() const { return playerInfo.position; }
-    inline float getHeight() const { return playerInfo.height; }
-    inline PlayerInfo &getInfo() { return playerInfo; }
-    inline bool isLanding() const { return m_isLanding; }
+    inline PlayerInfo &getInfo() { return info; }
 
     void dig();
     void put(Block_Type block_type);
     void jump();
     void physical();
-    bool isBindPhysical() const { return playerInfo.physical; }
-    void bindPhysical(bool sign) { playerInfo.physical = sign; }
     bool obstacleTest(const glm::vec3 &testPos);
     bool isDive();
     bool isSwim();
@@ -51,8 +47,6 @@ private:
     void updateCamera();
     
     Camera camera;
-    PlayerInfo playerInfo;
-
-    bool m_isLanding = true;
+    PlayerInfo info;
 };
 #endif

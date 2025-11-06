@@ -3,7 +3,7 @@
 #include <iostream>
 #include <ImGui/imgui.h>
 
-bool is_cursor_disabled = false;
+static bool is_cursor_disabled = false;
 
 void Controller::KeyListen(GLFWwindow *window)
 {
@@ -39,11 +39,11 @@ void Controller::KeyListen(GLFWwindow *window)
     }
 
     static bool jumping = false;
-    if (Player::GetInstance().isLanding())
+    if (Player::GetInstance().getInfo().landing)
     {
         jumping = false;
     }
-    if (Player::GetInstance().isSwim() && !jumping && (!Player::GetInstance().isLanding() || Player::GetInstance().isDive()))
+    if (Player::GetInstance().isSwim() && !jumping && (!Player::GetInstance().getInfo().landing || Player::GetInstance().isDive()))
     {
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
         {
@@ -54,7 +54,7 @@ void Controller::KeyListen(GLFWwindow *window)
             Player::GetInstance().getInfo().dropSpeed = 0.05f;
         }
     }
-    else if (Player::GetInstance().isLanding() || Player::GetInstance().getInfo().multipleJump)
+    else if (Player::GetInstance().getInfo().landing || Player::GetInstance().getInfo().multipleJump)
     {
         static bool spaceRelease = true;
         if (spaceRelease && glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) 

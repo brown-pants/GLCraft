@@ -30,7 +30,7 @@ void World::updateRenderMeshes()
     std::unique_lock<std::mutex> lock(mtx, std::defer_lock);
     if (isUpdateRenderMeshes && lock.try_lock())
     {
-        Renderer::GetInstance().updateSquares(vOffsets, matrices);
+        Renderer::GetInstance().updateSquares(block_vOffsets, block_matrices);
         Renderer::GetInstance().updateWater(water_matrices);
         isUpdateRenderMeshes = false;
     }
@@ -98,33 +98,16 @@ bool World::putTest(const glm::vec3& pos, const glm::vec3& dir, Block_Type block
 
 bool World::touchTest(const glm::vec3& pos)
 {
-    int chunkX = floor(pos.x / CHUNK_X) * CHUNK_X;
-    int chunkZ = floor(pos.z / CHUNK_Z) * CHUNK_Z;
-    Chunk* chunk = getChunk(glm::vec3(chunkX, 0.0f, chunkZ));
-    if (chunk != nullptr)
+    int type = getBlockFromPosition(pos);
+    if (type != -1 && type != Air && type != Water)
     {
-        int blockX = (int)floor(pos.x) % CHUNK_X;
-        int blockZ = (int)floor(pos.z) % CHUNK_Z;
-        int blockY = (int)pos.y;
-        if (blockX < 0)
-        {
-            blockX += CHUNK_X;
-        }
-        if (blockZ < 0)
-        {
-            blockZ += CHUNK_Z;
-        }
-        int type = chunk->getBlockType(blockY, blockX, blockZ);
-        if (type != -1 && type != Air && type != Water)
-        {
-            return true;
-            
-        }
+        return true;
+        
     }
     return false;
 }
 
-bool World::physicalTest(const glm::vec3 pos)
+bool World::physicalTest(const glm::vec3 pos, float height)
 {
     int chunkX = floor(pos.x / CHUNK_X) * CHUNK_X;
     int chunkZ = floor(pos.z / CHUNK_Z) * CHUNK_Z;
@@ -142,7 +125,7 @@ bool World::physicalTest(const glm::vec3 pos)
         {
             blockZ += CHUNK_Z;
         }
-        for (float i = 0.0f; i <= Player::GetInstance().getHeight(); i += 0.1f)
+        for (float i = 0.0f; i <= height; i += 0.1f)
         {
             int type = chunk->getBlockType(blockY + i, blockX, blockZ);
             if (type != -1 && type != Air && type != Water)
@@ -174,16 +157,17 @@ glm::vec3 World::getSkyColor() const
 
 void World::updateMeshes()
 { 
-    vOffsets.clear();
-    matrices.clear();
+    block_vOffsets.clear();
+    block_matrices.clear();
     water_matrices.clear();
     for(auto chunk : chunks)
     {
-        std::vector<float> &chunk_vOffsets = chunk->getVOffsets();
-        std::vector<glm::mat4>& chunk_matrices = chunk->getMatrices();
-        std::vector<glm::mat4>& chunk_water_matrices = chunk->getWaterMatrices();
-        vOffsets.insert(vOffsets.end(), chunk_vOffsets.begin(), chunk_vOffsets.end());
-        matrices.insert(matrices.end(), chunk_matrices.begin(), chunk_matrices.end());
+        const std::vector<float> &chunk_block_vOffsets = chunk->getVOffsets();
+        const std::vector<glm::mat4>& chunk_block_matrices = chunk->getMatrices();
+        const std::vector<glm::mat4>& chunk_water_matrices = chunk->getWaterMatrices();
+        
+        block_vOffsets.insert(block_vOffsets.end(), chunk_block_vOffsets.begin(), chunk_block_vOffsets.end());
+        block_matrices.insert(block_matrices.end(), chunk_block_matrices.begin(), chunk_block_matrices.end());
         water_matrices.insert(water_matrices.end(), chunk_water_matrices.begin(), chunk_water_matrices.end());
     }
     isUpdateRenderMeshes = true;
@@ -224,7 +208,7 @@ World::~World()
 void World::update()
 {
     bool isUpdateMeshes = false;
-    glm::vec3 playerPos = Player::GetInstance().getPosition();
+    const glm::vec3 &playerPos = Player::GetInstance().getInfo().position;
     for(auto it = edgeChunks.begin(); it != edgeChunks.end(); )
     {
         if (!m_running)

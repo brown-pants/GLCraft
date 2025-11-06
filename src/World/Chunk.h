@@ -9,6 +9,7 @@
 #include "Block.h"
 #include <glm/glm.hpp>
 #include <vector>
+#include <tuple>
 
 class Chunk
 {
@@ -18,8 +19,8 @@ public:
 
     inline glm::vec3 getPosition() const { return position; }
 
-    inline std::vector<float>& getVOffsets() { return vOffsets; }
-    inline std::vector<glm::mat4>& getMatrices() { return matrices; }
+    inline std::vector<float>& getVOffsets() { return block_vOffsets; }
+    inline std::vector<glm::mat4>& getMatrices() { return block_matrices; }
     inline std::vector<glm::mat4>& getWaterMatrices() { return water_matrices; }
     
     inline Chunk* getLeftChunk() const { return leftChunk; }
@@ -40,6 +41,9 @@ private:
     void generateCactus(int y, int x, int z, int height);
     void loadBlock(int x, int y, int z, Block_Type block_type);
     bool aroundWater(int x, int y, int z);
+    std::tuple<bool, bool, bool, bool, bool, bool> aroundTransparent(int x, int y, int z);
+    
+    glm::vec3 position;
     Block blocks[CHUNK_Y][CHUNK_X][CHUNK_Z];
 
     Chunk *leftChunk = nullptr;
@@ -47,10 +51,9 @@ private:
     Chunk *frontChunk = nullptr;
     Chunk *backChunk = nullptr;
 
-    std::vector<float> vOffsets;
-    std::vector<glm::mat4> matrices;
+    std::vector<float> block_vOffsets;
+    std::vector<glm::mat4> block_matrices;
     std::vector<glm::mat4> water_matrices;
-    glm::vec3 position;
 };
 
 #endif

@@ -153,8 +153,8 @@ Chunk::~Chunk()
 
 void Chunk::updateMesh()
 {
-    vOffsets.clear();
-    matrices.clear();
+    block_vOffsets.clear();
+    block_matrices.clear();
     water_matrices.clear();
     for (int y = 0; y < CHUNK_Y; y++)
     {
@@ -167,124 +167,53 @@ void Chunk::updateMesh()
                 {
                     continue;
                 }
-                bool leftBlockTrans;
-                bool rightBlockTrans;
-                bool frontBlockTrans;
-                bool backBlockTrans;
-                bool topBlockTrans;
-                bool bottomBlockTrans;
-                //Y
-                if (y == 0)
-                {
-                    topBlockTrans = blocks[y + 1][x][z].isTransparent();
-                    bottomBlockTrans = true;
-                }
-                else if (y == CHUNK_Y - 1)
-                {
-                    bottomBlockTrans = blocks[y - 1][x][z].isTransparent();
-                    topBlockTrans = true;
-                }
-                else
-                {
-                    topBlockTrans = blocks[y + 1][x][z].isTransparent();
-                    bottomBlockTrans = blocks[y - 1][x][z].isTransparent();
-                    if (block.type() == CactusBlock)
-                    {
-                        if (blocks[y + 1][x][z].type() == CactusBlock)
-                        {
-                            topBlockTrans = false;
-                        }
-                        if (blocks[y - 1][x][z].type() == CactusBlock)
-                        {
-                            bottomBlockTrans = false;
-                        }
-                    }
-                }
-                //X
-                if (x == 0)
-                {
-                    rightBlockTrans = blocks[y][x + 1][z].isTransparent();
-                    if (leftChunk != nullptr)
-                    {
-                        leftBlockTrans = leftChunk->blocks[y][CHUNK_X - 1][z].isTransparent();
-                    }
-                    else leftBlockTrans = false;
-                }
-                else if (x == CHUNK_X - 1)
-                {
-                    leftBlockTrans = blocks[y][x - 1][z].isTransparent();
-                    if (rightChunk != nullptr)
-                    {
-                        rightBlockTrans = rightChunk->blocks[y][0][z].isTransparent();
-                    }
-                    else rightBlockTrans = false;
-                }
-                else
-                {
-                    rightBlockTrans = blocks[y][x + 1][z].isTransparent();
-                    leftBlockTrans = blocks[y][x - 1][z].isTransparent();
-                }
-                //Z
-                if (z == 0)
-                {
-                    frontBlockTrans = blocks[y][x][z + 1].isTransparent();
-                    if (backChunk != nullptr)
-                    {
-                        backBlockTrans = backChunk->blocks[y][x][CHUNK_Z - 1].isTransparent();
-                    }
-                    else backBlockTrans = false;
-                }
-                else if (z == CHUNK_Z - 1)
-                {
-                    backBlockTrans = blocks[y][x][z - 1].isTransparent();
-                    if (frontChunk != nullptr)
-                    {
-                        frontBlockTrans = frontChunk->blocks[y][x][0].isTransparent();
-                    }
-                    else frontBlockTrans = false;
-                }
-                else
-                {
-                    frontBlockTrans = blocks[y][x][z + 1].isTransparent();
-                    backBlockTrans = blocks[y][x][z - 1].isTransparent();
-                }
-
                 //update water
                 if (block.type() == Water)
                 {
                     water_matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y + 0.3f, z)) * Translate_global * Rotate_top);
                     continue;
                 }
+
+                auto 
+                [
+                    leftBlockTrans,
+                    rightBlockTrans,
+                    frontBlockTrans,
+                    backBlockTrans,
+                    topBlockTrans,
+                    bottomBlockTrans
+                ] = aroundTransparent(x, y, z);
+
                 //update blocks
                 if (leftBlockTrans || block.type() == CactusBlock)
                 {
-                    vOffsets.push_back(block.getLeftTexture());
-                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x - 0.5f, y, z)) * Translate_global * Rotate_left * (block.type() == CactusBlock ? Translate_cactus : glm::mat4(1.0f)));
+                    block_vOffsets.push_back(block.getLeftTexture());
+                    block_matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x - 0.5f, y, z)) * Translate_global * Rotate_left * (block.type() == CactusBlock ? Translate_cactus : glm::mat4(1.0f)));
                 }
                 if (rightBlockTrans || block.type() == CactusBlock)
                 {
-                    vOffsets.push_back(block.getRightTexture());
-                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x + 0.5f, y, z)) * Translate_global * Rotate_right * (block.type() == CactusBlock ? Translate_cactus : glm::mat4(1.0f)));
+                    block_vOffsets.push_back(block.getRightTexture());
+                    block_matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x + 0.5f, y, z)) * Translate_global * Rotate_right * (block.type() == CactusBlock ? Translate_cactus : glm::mat4(1.0f)));
                 }
                 if (topBlockTrans)
                 {
-                    vOffsets.push_back(block.getTopTexture());
-                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y + 0.5f, z)) * Translate_global * Rotate_top);
+                    block_vOffsets.push_back(block.getTopTexture());
+                    block_matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y + 0.5f, z)) * Translate_global * Rotate_top);
                 }
                 if (bottomBlockTrans)
                 {
-                    vOffsets.push_back(block.getBottomTexture());
-                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y - 0.5f, z)) * Translate_global * Rotate_bottom);
+                    block_vOffsets.push_back(block.getBottomTexture());
+                    block_matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y - 0.5f, z)) * Translate_global * Rotate_bottom);
                 }
                 if (frontBlockTrans || block.type() == CactusBlock)
                 {
-                    vOffsets.push_back(block.getFrontTexture());
-                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y, z + 0.5f)) * Translate_global * Rotate_front * (block.type() == CactusBlock ? Translate_cactus : glm::mat4(1.0f)));
+                    block_vOffsets.push_back(block.getFrontTexture());
+                    block_matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y, z + 0.5f)) * Translate_global * Rotate_front * (block.type() == CactusBlock ? Translate_cactus : glm::mat4(1.0f)));
                 }
                 if (backBlockTrans || block.type() == CactusBlock)
                 {
-                    vOffsets.push_back(block.getBackTexture());
-                    matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y, z - 0.5f)) * Translate_global * Rotate_back * (block.type() == CactusBlock ? Translate_cactus : glm::mat4(1.0f)));
+                    block_vOffsets.push_back(block.getBackTexture());
+                    block_matrices.push_back(glm::translate(glm::mat4(1.0f), position + glm::vec3(x, y, z - 0.5f)) * Translate_global * Rotate_back * (block.type() == CactusBlock ? Translate_cactus : glm::mat4(1.0f)));
                 }
             }
         }
@@ -300,6 +229,7 @@ int Chunk::getBlockType(int y, int x, int z)
 void Chunk::setBlock(int y, int x, int z, Block_Type type)
 {
     blocks[y][x][z] = type;
+    Application::GetApp()->changeBlock(position.x, position.z, x, y, z, type);
     updateMesh();
 }
 
@@ -311,15 +241,13 @@ bool Chunk::dig(int y, int x, int z)
     {
         if (y == SEA_HORIZON && aroundWater(x, y, z))
         {
-            blocks[y][x][z] = Water;
+            setBlock(y, x, z, Water);
             World::RunningWorld->addFlowWater(position + glm::vec3(x, y, z));
         }
         else
         {
-            blocks[y][x][z] = Air;
+            setBlock(y, x, z, Air);
         }
-        Application::GetApp()->changeBlock(position.x, position.z, x, y, z, Air);
-        updateMesh();
         if (this->leftChunk != nullptr)
         {
             this->leftChunk->updateMesh();
@@ -345,11 +273,11 @@ bool Chunk::put(int y, int x, int z, Block_Type type)
 {
     if (y < 0 || y >= CHUNK_Y || x < 0 || x >= CHUNK_X || z < 0 || z >= CHUNK_Z) return false;
     
-    if (Player::GetInstance().isBindPhysical())
+    if (Player::GetInstance().getInfo().physical)
     {
         Block_Type temp = blocks[y][x][z].type();
         blocks[y][x][z] = type;
-        bool sign = Player::GetInstance().obstacleTest(Player::GetInstance().getPosition());
+        bool sign = Player::GetInstance().obstacleTest(Player::GetInstance().getInfo().position);
         blocks[y][x][z] = temp;
         if (sign)
         {
@@ -359,9 +287,7 @@ bool Chunk::put(int y, int x, int z, Block_Type type)
 
     if (blocks[y][x][z].type() == Air || blocks[y][x][z].type() == Water)
     {
-        blocks[y][x][z] = type;
-        Application::GetApp()->changeBlock(position.x, position.z, x, y, z, type);
-        updateMesh();
+        setBlock(y, x, z, type);
         if (this->leftChunk != nullptr)
         {
             this->leftChunk->updateMesh();
@@ -437,7 +363,7 @@ void Chunk::loadBlock(int x, int y, int z, Block_Type block_type)
     {
         blocks[y][x][z] = block_type;
     }
-    if (y == SEA_HORIZON && blocks[y][x][z].type() == Air)
+    if (y == SEA_HORIZON && blocks[y][x][z].type() == Air && type == -1)
     {
         blocks[y][x][z] = Water;
     }
@@ -485,4 +411,91 @@ bool Chunk::aroundWater(int x, int y, int z)
     }
 
     return false;
+}
+
+std::tuple<bool, bool, bool, bool, bool, bool> Chunk::aroundTransparent(int x, int y, int z)
+{
+    const Block& block = blocks[y][x][z];
+    bool leftBlockTrans;
+    bool rightBlockTrans;
+    bool frontBlockTrans;
+    bool backBlockTrans;
+    bool topBlockTrans;
+    bool bottomBlockTrans;
+    //Y
+    if (y == 0)
+    {
+        topBlockTrans = blocks[y + 1][x][z].isTransparent();
+        bottomBlockTrans = true;
+    }
+    else if (y == CHUNK_Y - 1)
+    {
+        bottomBlockTrans = blocks[y - 1][x][z].isTransparent();
+        topBlockTrans = true;
+    }
+    else
+    {
+        topBlockTrans = blocks[y + 1][x][z].isTransparent();
+        bottomBlockTrans = blocks[y - 1][x][z].isTransparent();
+        if (block.type() == CactusBlock)
+        {
+            if (blocks[y + 1][x][z].type() == CactusBlock)
+            {
+                topBlockTrans = false;
+            }
+            if (blocks[y - 1][x][z].type() == CactusBlock)
+            {
+                bottomBlockTrans = false;
+            }
+        }
+    }
+    //X
+    if (x == 0)
+    {
+        rightBlockTrans = blocks[y][x + 1][z].isTransparent();
+        if (leftChunk != nullptr)
+        {
+            leftBlockTrans = leftChunk->blocks[y][CHUNK_X - 1][z].isTransparent();
+        }
+        else leftBlockTrans = false;
+    }
+    else if (x == CHUNK_X - 1)
+    {
+        leftBlockTrans = blocks[y][x - 1][z].isTransparent();
+        if (rightChunk != nullptr)
+        {
+            rightBlockTrans = rightChunk->blocks[y][0][z].isTransparent();
+        }
+        else rightBlockTrans = false;
+    }
+    else
+    {
+        rightBlockTrans = blocks[y][x + 1][z].isTransparent();
+        leftBlockTrans = blocks[y][x - 1][z].isTransparent();
+    }
+    //Z
+    if (z == 0)
+    {
+        frontBlockTrans = blocks[y][x][z + 1].isTransparent();
+        if (backChunk != nullptr)
+        {
+            backBlockTrans = backChunk->blocks[y][x][CHUNK_Z - 1].isTransparent();
+        }
+        else backBlockTrans = false;
+    }
+    else if (z == CHUNK_Z - 1)
+    {
+        backBlockTrans = blocks[y][x][z - 1].isTransparent();
+        if (frontChunk != nullptr)
+        {
+            frontBlockTrans = frontChunk->blocks[y][x][0].isTransparent();
+        }
+        else frontBlockTrans = false;
+    }
+    else
+    {
+        frontBlockTrans = blocks[y][x][z + 1].isTransparent();
+        backBlockTrans = blocks[y][x][z - 1].isTransparent();
+    }
+    return std::make_tuple(leftBlockTrans, rightBlockTrans, frontBlockTrans, backBlockTrans, topBlockTrans, bottomBlockTrans);
 }

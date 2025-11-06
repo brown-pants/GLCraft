@@ -14,7 +14,7 @@ Player::Player()
 
 void Player::init(const PlayerInfo &info)
 {
-    playerInfo = info;
+    this->info = info;
     updateCamera();
 }
 
@@ -39,17 +39,17 @@ void Player::move(int dir)
         left --;
     }
 
-    glm::vec3 front_dir = playerInfo.front;
-    if (playerInfo.physical)
+    glm::vec3 front_dir = info.front;
+    if (info.physical)
     {
         front_dir.y = 0.0f;
         front_dir = glm::normalize(front_dir);
     }
 
-    glm::vec3 left_dir = glm::cross(camera.up, glm::vec3(playerInfo.front.x, 0.0f, playerInfo.front.z));
+    glm::vec3 left_dir = glm::cross(camera.up, glm::vec3(info.front.x, 0.0f, info.front.z));
     left_dir = glm::normalize(left_dir);
     
-    float speed = playerInfo.move_speed * 100 / Application::GetFps();
+    float speed = info.move_speed * 100 / Application::GetFps();
     if (speed >= 0.5f)
     {
         speed = 0.4f;
@@ -66,28 +66,28 @@ void Player::move(int dir)
     glm::vec3 front_move = front_dir * speed * front_distance;
     glm::vec3 left_move = left_dir * speed * left_distance;
 
-    if (playerInfo.physical)
+    if (info.physical)
     {
         glm::vec3 testPos;
         // x test
-        testPos = playerInfo.position;
+        testPos = info.position;
         testPos.x += front_move.x + left_move.x;
         if (!obstacleTest(testPos))
         {
-            playerInfo.position.x += front_move.x + left_move.x;
+            info.position.x += front_move.x + left_move.x;
         }
         // z test
-        testPos = playerInfo.position;
+        testPos = info.position;
         testPos.z += front_move.z + left_move.z;
         if (!obstacleTest(testPos))
         {
-            playerInfo.position.z += front_move.z + left_move.z;
+            info.position.z += front_move.z + left_move.z;
         }
     }
     else
     {
-        playerInfo.position += front_move;
-        playerInfo.position += left_move;
+        info.position += front_move;
+        info.position += left_move;
     }
     
     updateCamera();
@@ -95,7 +95,7 @@ void Player::move(int dir)
 
 void Player::setFront(const glm::vec3 &front)
 {
-    playerInfo.front = front;
+    info.front = front;
     updateCamera();
 }
 
@@ -137,60 +137,60 @@ void Player::put(Block_Type block_type)
 
 void Player::jump()
 {
-    playerInfo.dropSpeed = playerInfo.jump;
+    info.dropSpeed = info.jump;
 }
 
 void Player::updateCamera()
 {
-    camera.front = playerInfo.front;
-    camera.position = glm::vec3(playerInfo.position.x, playerInfo.position.y + playerInfo.height - 0.2f, playerInfo.position.z);
+    camera.front = info.front;
+    camera.position = glm::vec3(info.position.x, info.position.y + info.height - 0.2f, info.position.z);
 }
 
 void Player::physical()
 {
-    if (!playerInfo.physical)
+    if (!info.physical)
     {
         return;
     }
 
-    float dropSpeed = playerInfo.dropSpeed * 120 / Application::GetFps();
+    float dropSpeed = info.dropSpeed * 120 / Application::GetFps();
     if (dropSpeed >= 1.0f)
     {
         dropSpeed = 0.9f;
     }
 
-    glm::vec3 testPos = playerInfo.position;
+    glm::vec3 testPos = info.position;
     testPos.y -= dropSpeed;
     
     if (obstacleTest(testPos))
     {
-        if (playerInfo.dropSpeed >= 0.0f)
+        if (info.dropSpeed >= 0.0f)
         {
-            m_isLanding = true;
+            info.landing = true;
         }
-        playerInfo.dropSpeed = playerInfo.gravity;
+        info.dropSpeed = info.gravity;
     }
     else
     {
-        m_isLanding = false;
-        playerInfo.position = testPos;
-        playerInfo.dropSpeed += playerInfo.gravity;
+        info.landing = false;
+        info.position = testPos;
+        info.dropSpeed += info.gravity;
         updateCamera();
     }
 
-    if (playerInfo.dropSpeed >= 10000.0f)
+    if (info.dropSpeed >= 10000.0f)
     {
-        playerInfo.dropSpeed = 10000.0f;
+        info.dropSpeed = 10000.0f;
     }
 }
 
 bool Player::obstacleTest(const glm::vec3 &testPos)
 {
     return
-    World::RunningWorld->physicalTest(testPos + glm::vec3(playerInfo.width, 0, playerInfo.width)) ||
-    World::RunningWorld->physicalTest(testPos + glm::vec3(playerInfo.width, 0, -playerInfo.width)) ||
-    World::RunningWorld->physicalTest(testPos + glm::vec3(-playerInfo.width, 0, playerInfo.width)) ||
-    World::RunningWorld->physicalTest(testPos + glm::vec3(-playerInfo.width, 0, -playerInfo.width));
+    World::RunningWorld->physicalTest(testPos + glm::vec3(info.width, 0, info.width), info.height) ||
+    World::RunningWorld->physicalTest(testPos + glm::vec3(info.width, 0, -info.width), info.height) ||
+    World::RunningWorld->physicalTest(testPos + glm::vec3(-info.width, 0, info.width), info.height) ||
+    World::RunningWorld->physicalTest(testPos + glm::vec3(-info.width, 0, -info.width), info.height);
 }
 
 bool Player::isDive()
@@ -199,9 +199,9 @@ bool Player::isDive()
     {
         return false;
     }
-    for (int y = playerInfo.position.y; y <= SEA_HORIZON; y ++)
+    for (int y = info.position.y; y <= SEA_HORIZON; y ++)
     {
-        int type = World::RunningWorld->getBlockFromPosition(glm::vec3(playerInfo.position.x, y, playerInfo.position.z));
+        int type = World::RunningWorld->getBlockFromPosition(glm::vec3(info.position.x, y, info.position.z));
         if (type == Water)
         {
             return true;
@@ -216,14 +216,14 @@ bool Player::isDive()
 
 bool Player::isSwim()
 {
-    if (playerInfo.position.y + playerInfo.height / 2 > SEA_HORIZON + 1)
+    if (info.position.y + info.height / 2 > SEA_HORIZON + 1)
     {
         return false;
     }
     
-    for (int y = playerInfo.position.y; y <= SEA_HORIZON; y ++)
+    for (int y = info.position.y; y <= SEA_HORIZON; y ++)
     {
-        int type = World::RunningWorld->getBlockFromPosition(glm::vec3(playerInfo.position.x, y, playerInfo.position.z));
+        int type = World::RunningWorld->getBlockFromPosition(glm::vec3(info.position.x, y, info.position.z));
         if (type == Water)
         {
             return true;

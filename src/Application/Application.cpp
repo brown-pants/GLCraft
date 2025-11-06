@@ -333,7 +333,7 @@ bool Application::loadWorld(const std::string &name)
 				int block_type = query.getColumn(5);
 				m_changedBlocks.insert(std::pair<BlockPosition, Block_Type>(blockPos, (Block_Type)block_type));
 			}
-			world->init(Player::GetInstance().getPosition(), sunAngle);
+			world->init(Player::GetInstance().getInfo().position, sunAngle);
 		}
 		else
 		{
@@ -370,12 +370,12 @@ void Application::saveGameInfo()
             "UPDATE info SET sunAngle = ?, position_x = ?, position_y = ?, position_z = ?, "
     		"front_x = ?, front_y = ?, front_z = ?");
         update.bind(1, world->sunAngle());
-        update.bind(2, Player::GetInstance().getPosition().x);
-        update.bind(3, Player::GetInstance().getPosition().y);
-        update.bind(4, Player::GetInstance().getPosition().z);
-        update.bind(5, Player::GetInstance().getCamera().front.x);
-        update.bind(6, Player::GetInstance().getCamera().front.y);
-        update.bind(7, Player::GetInstance().getCamera().front.z);
+        update.bind(2, Player::GetInstance().getInfo().position.x);
+        update.bind(3, Player::GetInstance().getInfo().position.y);
+        update.bind(4, Player::GetInstance().getInfo().position.z);
+        update.bind(5, Player::GetInstance().getInfo().front.x);
+        update.bind(6, Player::GetInstance().getInfo().front.y);
+        update.bind(7, Player::GetInstance().getInfo().front.z);
         update.exec();
 	} catch (const std::exception& e) {
         std::cerr << "SQLite exception: " << e.what() << std::endl;
