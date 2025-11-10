@@ -13,14 +13,15 @@ public:
         Crosshair,
         Planet,
         Texture,
-        Water
+        Water,
+        Depth
     };
     static ShaderManager &GetInstance();
     void LoadShaders();
     GLShader &getShader(ShaderName name) { return shaders[name]; }
 
 private:
-    std::array<GLShader, 5> shaders;
+    std::array<GLShader, 6> shaders;
     GLShader load_shader(const std::string &vs_filename, const std::string &fs_filename);
 
     ShaderManager();

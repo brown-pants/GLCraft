@@ -17,6 +17,7 @@ void ShaderManager::LoadShaders()
     shaders[Planet] = load_shader("./resources/shaders/Planet.vs", "./resources/shaders/Planet.fs");
     shaders[Texture] = load_shader("./resources/shaders/Texture.vs", "./resources/shaders/Texture.fs");
     shaders[Water] = load_shader("./resources/shaders/Water.vs", "./resources/shaders/Water.fs");
+    shaders[Depth] = load_shader("./resources/shaders/Depth.vs", "./resources/shaders/Depth.fs");
 }
 
 GLShader ShaderManager::load_shader(const std::string &vs_filename, const std::string &fs_filename)

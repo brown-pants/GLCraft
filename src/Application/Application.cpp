@@ -70,25 +70,34 @@ int Application::run()
 	{
 		if (isLoading)
 		{
-			m_window->update();
+			glClearColor(0.5, 0.8, 1.0, 1.0);
+			glClear(GL_COLOR_BUFFER_BIT);
 			Renderer::GetInstance().drawLoadingBackground();
+			m_window->update();
 			continue;
 		}
 
-		renderImGui();
 		glm::vec3 skyColor = world->getSkyColor();
 		glClearColor(skyColor.r, skyColor.g, skyColor.b, 1.0f);
-		m_window->update();
-		Controller::KeyListen(m_window->getGlfwWindow());
+    	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
+		
+		Renderer::GetInstance().drawDepthMap();
 		Renderer::GetInstance().drawBlocks();
 		Renderer::GetInstance().drawPlanet();
 		Renderer::GetInstance().drawWater();
 		Renderer::GetInstance().drawCrosshair();
+		renderImGui();
+
 		world->updateRenderMeshes();
 		world->updatePlanet();
 		world->updateFlowWater();
 		Player::GetInstance().physical();
+		
+		Controller::KeyListen(m_window->getGlfwWindow());
+		m_window->update();
 	}
 	world->stop();
 	return 0;

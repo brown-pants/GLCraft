@@ -14,6 +14,8 @@ public:
 	void hide();
 	void show();
 	void close();
+	int width();
+	int height();
 
 	void update() const;
 	bool shouldClose() const;

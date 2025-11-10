@@ -66,10 +66,10 @@ Chunk::Chunk(glm::vec3 position, Chunk* leftChunk, Chunk* rightChunk, Chunk* fro
                 {
                     loadBlock(x, y, z, StoneBlock);
                 }
-                else if (temperature > 0.3f)  //ɳĮ
+                else if (temperature > 0.3f) // 沙漠
                 {
                     loadBlock(x, y, z, SandBlock);
-                    //������
+                    // 仙人掌
                     if (y == max_y)
                     {
                         float noise = PerlinNoise::Noise_2d(90, 1, position.x + x, position.z + z);
@@ -80,12 +80,12 @@ Chunk::Chunk(glm::vec3 position, Chunk* leftChunk, Chunk* rightChunk, Chunk* fro
                         }
                     }
                 }
-                else if (temperature > 0.0f) //����
+                else if (temperature > 0.0f) // 草原
                 {
                     if (y == max_y)
                     {
                         loadBlock(x, y, z, y >= SEA_HORIZON ? GrassBlock : ClayBlock);
-                        //generate tree
+                        // 树
                         if (tree_noise < 0.3 && x == tree_x && z == tree_z && y > SEA_HORIZON)
                         {
                             int height = abs((int)(tree_noise * 100)) % 5 + 4;
@@ -97,7 +97,7 @@ Chunk::Chunk(glm::vec3 position, Chunk* leftChunk, Chunk* rightChunk, Chunk* fro
                         loadBlock(x, y, z, ClayBlock);
                     }
                 }
-                else  //ѩ��
+                else  // 雪地
                 {
                     if (y == max_y)
                     {

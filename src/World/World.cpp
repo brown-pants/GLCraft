@@ -141,7 +141,7 @@ bool World::physicalTest(const glm::vec3 pos, float height)
 void World::updatePlanet()
 {
     float a = 1.5f / Application::GetFps();
-    sunRotateAngle += a;
+    sunRotateAngle += a * 100.0f / Application::GetFps();
     if (sunRotateAngle >= 360.0f)
     {
         sunRotateAngle = 0.0f;

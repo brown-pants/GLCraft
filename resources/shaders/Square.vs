@@ -11,17 +11,19 @@ uniform mat4 projection;
 uniform int tex2d_count;
 uniform float density;
 uniform float gradient;
+uniform mat4 lightSpaceMatrix;
 
 out vec3 normal;
 out vec3 fragPos;
-
 out float visibility;
+out vec4 fragPosLightSpace;
 
 void main()
 {
     //Light
     normal = mat3(transpose(inverse(instance_matrix))) * vec3(0.f, 0.f, -1.f);
     fragPos = vec3(instance_matrix * vec4(pos, 1.0));
+    fragPosLightSpace = lightSpaceMatrix * vec4(fragPos, 1.0);
 
     //Fog
     vec4 positionRelativeToCamera = view * instance_matrix * vec4(pos, 1.0);

@@ -16,12 +16,10 @@ Window::Window(int width, int height, const char* title)
         std::cout << "Failed to initialize GLAD" << std::endl;
     }
     
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glViewport(0, 0, width, height);
     glfwSetWindowUserPointer(m_window, &m_events);
-
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND); 
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 Window::~Window()
@@ -44,10 +42,23 @@ void Window::close()
     glfwSetWindowShouldClose(m_window, 1);
 }
 
+int Window::width()
+{
+    int width;
+    glfwGetWindowSize(m_window, &width, NULL);
+    return width;
+}
+
+int Window::height()
+{
+    int height;
+    glfwGetWindowSize(m_window, NULL, &height);
+    return height;
+}
+
 void Window::update() const
 {
     glfwSwapBuffers(m_window);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glfwPollEvents();
 }
 bool Window::shouldClose() const
@@ -84,7 +95,6 @@ void Window::setScrollEvent(const std::function<void(double, double)>& f)
 {
     m_events.scrollWheel = f;
     glfwSetScrollCallback(m_window, [](GLFWwindow* window, double xpos, double ypos){
-        
         ((Events*)glfwGetWindowUserPointer(window))->scrollWheel(xpos, ypos);
     });
 }

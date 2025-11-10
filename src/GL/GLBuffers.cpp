@@ -39,3 +39,35 @@ GLVertexBuffer::GLVertexBuffer() : GLBuffer(VBO) {}
 
 //GLElementBuffer
 GLElementBuffer::GLElementBuffer() : GLBuffer(EBO) {}
+
+//GLFrameBuffer
+GLFrameBuffer::GLFrameBuffer() : GLObject() {}
+
+void GLFrameBuffer::setDepthMap(const GLDepthMap &depthMap)
+{
+	this->bind();
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap.id(), 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	this->unbind();
+}
+
+void GLFrameBuffer::GLFrameBuffer::bind() const
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, ID);
+}
+
+void GLFrameBuffer::GLFrameBuffer::unbind() const
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void GLFrameBuffer::create()
+{
+	glGenFramebuffers(1, &ID);
+}
+
+void GLFrameBuffer::deleteObj()
+{
+	glDeleteFramebuffers(1, &ID);
+}

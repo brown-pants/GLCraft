@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include "../Application/Application.h"
 #include "../Resource/ShaderManager.h"
 #include "../Resource/TextureManager.h"
 #include "../Player/Player.h"
@@ -157,6 +158,13 @@ void Renderer::init()
     loadingMesh.vao.addVBO(1, loadingMesh.vbo, 2, 4 * sizeof(float), (const void *)(2 * sizeof(float)));
     loadingMesh.ebo.setData(sizeof(loading_indices), loading_indices);
     loadingMesh.vao.setEBO(loadingMesh.ebo);
+
+    /*          loading depth map frame buffer         */
+    depthMap.create();
+    depthMapFBO.create();
+
+    depthMap.setData(shadow_width, shadow_height);
+    depthMapFBO.setDepthMap(depthMap);
 }
 
 void Renderer::drawBlocks()
@@ -172,6 +180,11 @@ void Renderer::drawBlocks()
     squareShader.setVec3("sunPos", World::RunningWorld->getSunPosition());
     squareShader.setVec3("moonPos", World::RunningWorld->getMoonPosition());
     squareShader.setVec3("skyColor", World::RunningWorld->getSkyColor());
+    squareShader.setMat4("lightSpaceMatrix", getLightSpaceMatrix());
+    squareShader.setInt("tex", 0);
+    squareShader.setInt("shadowMap", 1);
+
+    // dive
     if (Player::GetInstance().isDive())
     {
         squareShader.setVec3("diveColor", glm::vec3(0.3, 0.5, 0.7));
@@ -184,17 +197,24 @@ void Renderer::drawBlocks()
         squareShader.setFloat("density", 0.005);
         squareShader.setFloat("gradient", 9.5);
     }
+    
+    // bind textures
+    glActiveTexture(GL_TEXTURE0);
+    squareTexture.bind();
+    glActiveTexture(GL_TEXTURE1);
+    depthMap.bind();
 
     //render...
     squareShader.bind();
-    squareTexture.bind();
     squareMesh.vao.bind();
 
     glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, squareCount);
 
     squareMesh.vao.unbind();
-    squareTexture.unbind();
     squareShader.unbind();
+    
+    squareTexture.unbind();
+    depthMap.unbind();
 }
 
 void Renderer::drawWater()
@@ -212,8 +232,13 @@ void Renderer::drawWater()
     waterShader.setVec3("moonPos", World::RunningWorld->getMoonPosition());
     waterShader.setVec3("skyColor", World::RunningWorld->getSkyColor());
     waterShader.setFloat("texOffset", waterMapOffset );
+    waterShader.setInt("tex", 0);
 
-    waterMapOffset += 0.001f;
+    // bind textures
+    glActiveTexture(GL_TEXTURE0);
+    waterMap.bind();
+
+    waterMapOffset += 0.001f * 100.0f / Application::GetFps();
     if (waterMapOffset >= 16)
     {
         waterMapOffset = 0;
@@ -221,14 +246,13 @@ void Renderer::drawWater()
 
     //render...
     waterShader.bind();
-    waterMap.bind();
     waterMesh.vao.bind();
 
     glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, waterCount);
 
     waterMesh.vao.unbind();
-    waterMap.unbind();
     waterShader.unbind();
+    waterMap.unbind();
     glEnable(GL_CULL_FACE);
 }
 
@@ -237,9 +261,7 @@ void Renderer::drawCrosshair()
     glDisable(GL_DEPTH_TEST);
     GLShader& squareShader = ShaderManager::GetInstance().getShader(ShaderManager::Crosshair);
     Camera& camera = Player::GetInstance().getCamera();
-
     squareShader.setMat4("projection", camera.getProjectionMatrix());
-
     squareShader.bind();
     crosshairMesh.vao.bind();
     glDrawArrays(GL_LINES, 0, 4);
@@ -258,18 +280,24 @@ void Renderer::drawPlanet()
     glm::mat4 view = glm::mat4(glm::mat3(camera.getViewMatrix()));
     shader.setMat4("view", view);
     shader.setMat4("projection", camera.getProjectionMatrix());
+    shader.setInt("tex", 0);
 
     planetMesh.vao.bind();
     shader.setMat4("model", World::RunningWorld->getSunModelMatrix());
     shader.bind();
+
     //draw sun
+    glActiveTexture(GL_TEXTURE0);
     TextureManager::GetInstance().getSunTexture().bind();
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
     //draw moon
     shader.setMat4("model", World::RunningWorld->getMoonModelMatrix());
     shader.bind();
+    glActiveTexture(GL_TEXTURE0);
     TextureManager::GetInstance().getMoonTexture().bind();
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    
     planetMesh.vao.unbind();
     shader.unbind();
     glDepthFunc(GL_LESS);
@@ -286,6 +314,50 @@ void Renderer::drawLoadingBackground()
     shader.unbind();
     texture.unbind();
     loadingMesh.vao.unbind();
+}
+
+glm::mat4 Renderer::getLightSpaceMatrix()
+{
+    glm::vec3 playerPos = Player::GetInstance().getInfo().position;
+    glm::vec3 lightDir = World::RunningWorld->sunAngle() < 180.0f 
+        ? World::RunningWorld->getSunPosition() 
+        : World::RunningWorld->getMoonPosition();
+    lightDir = -glm::normalize(lightDir);
+    
+    const float REGION_SIZE = 32.0f;
+    glm::vec3 regionCenter = glm::vec3(
+        round(playerPos.x / REGION_SIZE) * REGION_SIZE,
+        round(playerPos.y / REGION_SIZE) * REGION_SIZE,
+        round(playerPos.z / REGION_SIZE) * REGION_SIZE
+    );
+    
+    glm::vec3 lightPos = regionCenter - lightDir * 300.0f;
+    glm::vec3 lookAtPos = regionCenter;
+    
+    float near_plane = 1.0f, far_plane = 800.0f;
+    glm::mat4 lightProjection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, near_plane, far_plane);
+    glm::mat4 lightView = glm::lookAt(lightPos, lookAtPos, glm::vec3(0.0f, 1.0f, 0.0f));
+    
+    return lightProjection * lightView;
+}
+
+void Renderer::drawDepthMap()
+{
+    glViewport(0, 0, shadow_width, shadow_height);
+    depthMapFBO.bind();
+    glClear(GL_DEPTH_BUFFER_BIT);
+    GLShader &shader = ShaderManager::GetInstance().getShader(ShaderManager::Depth);
+    shader.setMat4("lightSpaceMatrix", getLightSpaceMatrix());
+    shader.bind();
+    squareMesh.vao.bind();
+    glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, squareCount);
+    squareMesh.vao.unbind();
+    shader.unbind();
+    depthMapFBO.unbind();
+
+    int window_width = Application::GetApp()->getWindow()->width();
+    int window_height = Application::GetApp()->getWindow()->height();
+    glViewport(0, 0, window_width, window_height);
 }
 
 void Renderer::updateSquares(const std::vector<float> &vOffsets, const std::vector<glm::mat4> &matrices)
@@ -310,4 +382,6 @@ void Renderer::clearMeshes()
     planetMesh.clear();
     crosshairMesh.clear();
     waterMesh.clear();
+    depthMap.deleteObj();
+    depthMapFBO.deleteObj();
 }

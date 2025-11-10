@@ -26,4 +26,12 @@ public:
 	GLTexture2D();
 	void setData(GLubyte* data, GLsizei width, GLsizei height, GLboolean alpha);
 };
+
+class GLDepthMap : public GLTexture
+{
+public:
+	GLDepthMap();
+	void setData(GLsizei width, GLsizei height);
+};
+
 #endif
